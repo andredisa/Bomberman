@@ -8,10 +8,10 @@ public class Giocatore {
     private int numVite;
     private int numBombe;
 
-    public Giocatore(int posX, int posY) {
+    public Giocatore(int posX, int posY , int playerId) {
         this.posX = posX;
         this.posY = posY;
-        this.id = 0;
+        this.id = playerId;
         this.bombaPiazzata = false;
         this.morto = false;
         this.inGioco = false;

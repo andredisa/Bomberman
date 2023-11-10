@@ -11,6 +11,8 @@ public class Menu {
     JButton loadButton;
     JButton quitButton;
 
+    boolean isConnected = false;
+
     public Menu() {
         frame = new JFrame();
         frame.setTitle("Bomberman");
@@ -30,7 +32,10 @@ public class Menu {
         connectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                // Simula la connessione al server
+                isConnected = true;
+                Client.connect();
+                JOptionPane.showMessageDialog(frame, "Connessione effettuata");
             }
         });
 
@@ -39,13 +44,16 @@ public class Menu {
         loadButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //carica la mappa
-                Map map = new Map();
-                JFrame mapFrame = new JFrame("Map");
-                mapFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                mapFrame.add(map);
-                mapFrame.pack();
-                mapFrame.setVisible(true);
+                if (isConnected) {
+                    Map map = new Map();
+                    JFrame mapFrame = new JFrame("Map");
+                    mapFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    mapFrame.add(map);
+                    mapFrame.pack();
+                    mapFrame.setVisible(true);
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Devi connetterti prima la server!");
+                }
             }
         });
 
@@ -75,4 +83,3 @@ public class Menu {
         });
     }
 }
-

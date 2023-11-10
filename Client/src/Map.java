@@ -12,11 +12,11 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     private final int width = 17;
     private final int height = 13;
     private final int blockSize = 40;
-    private Image giocatore1;
+    private Image imgPlayer;
     private Timer timer;
-    
-    private float player1X = 1;
-    private float player1Y = 1;
+
+    private float playerX = 1;
+    private float playerY = 1;
 
     private float moveSpeed = 1;
     private BufferedImage offScreenImage;
@@ -26,7 +26,7 @@ public class Map extends JPanel implements KeyListener, ActionListener {
         setPreferredSize(new Dimension(width * blockSize + 1, height * blockSize + 1));
         setBackground(new Color(30, 70, 30));
         try {
-            giocatore1 = ImageIO.read(Map.class.getResource("img/player1.png"));
+            imgPlayer = ImageIO.read(Map.class.getResource("img/player1.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -35,7 +35,7 @@ public class Map extends JPanel implements KeyListener, ActionListener {
         timer = new Timer(1000 / 60, this);
         timer.start();
 
-        //controlli movimento giocatore
+        // controlli movimento giocatore
         collisionMap = new boolean[width][height];
         initializeCollisionMap();
     }
@@ -62,7 +62,7 @@ public class Map extends JPanel implements KeyListener, ActionListener {
         offScreenGraphics.setColor(getBackground());
         offScreenGraphics.fillRect(0, 0, getWidth(), getHeight());
         drawBlocks(offScreenGraphics);
-        drawPlayers(offScreenGraphics);
+        drawPlayer(offScreenGraphics);
         g.drawImage(offScreenImage, 0, 0, this);
     }
 
@@ -77,8 +77,8 @@ public class Map extends JPanel implements KeyListener, ActionListener {
         }
     }
 
-    private void drawPlayers(Graphics g) {
-        g.drawImage(giocatore1, Math.round(player1X) * blockSize, Math.round(player1Y) * blockSize, blockSize, blockSize,
+    private void drawPlayer(Graphics g) {
+        g.drawImage(imgPlayer, Math.round(playerX) * blockSize, Math.round(playerY) * blockSize, blockSize, blockSize,
                 this);
     }
 
@@ -91,23 +91,23 @@ public class Map extends JPanel implements KeyListener, ActionListener {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
             case KeyEvent.VK_UP:
-                if (!collisionMap[(int) (player1X)][(int) (player1Y - moveSpeed)]) {
-                    player1Y -= moveSpeed;
+                if (!collisionMap[(int) (playerX)][(int) (playerY - moveSpeed)]) {
+                    playerY -= moveSpeed;
                 }
                 break;
             case KeyEvent.VK_DOWN:
-                if (!collisionMap[(int) (player1X)][(int) (player1Y + moveSpeed)]) {
-                    player1Y += moveSpeed;
+                if (!collisionMap[(int) (playerX)][(int) (playerY + moveSpeed)]) {
+                    playerY += moveSpeed;
                 }
                 break;
             case KeyEvent.VK_LEFT:
-                if (!collisionMap[(int) (player1X - moveSpeed)][(int) (player1Y)]) {
-                    player1X -= moveSpeed;
+                if (!collisionMap[(int) (playerX - moveSpeed)][(int) (playerY)]) {
+                    playerX -= moveSpeed;
                 }
                 break;
             case KeyEvent.VK_RIGHT:
-                if (!collisionMap[(int) (player1X + moveSpeed)][(int) (player1Y)]) {
-                    player1X += moveSpeed;
+                if (!collisionMap[(int) (playerX + moveSpeed)][(int) (playerY)]) {
+                    playerX += moveSpeed;
                 }
                 break;
         }

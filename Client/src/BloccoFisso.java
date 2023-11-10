@@ -7,6 +7,7 @@ class BloccoFisso {
     private int x;
     private int y;
 
+
     public BloccoFisso(int x, int y) {
         this.x = x;
         this.y = y;
@@ -20,6 +21,7 @@ class BloccoFisso {
 
     public void paintBlock(Graphics g) {
         if (blockImage != null) {
+            //blocksize
             g.drawImage(blockImage, x * 40, y * 40, 40, 40, null);
         }
     }

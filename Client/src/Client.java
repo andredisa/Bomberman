@@ -9,14 +9,13 @@ public class Client {
 
             // Ricevi il giocatore dal server
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-            Giocatore player = (Giocatore) ois.readObject();
-            System.out.println("Ricevuto il giocatore: " + player.toString());
+          
 
             // Chiudi la connessione
             ois.close();
             //oos.close();
             socket.close();
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

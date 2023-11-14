@@ -18,12 +18,12 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     private Image imgPlayer;
     private Timer timer;
 
-    private float playerX = 1;
-    private float playerY = 1;
-    private float moveSpeed = 1;
+    private int playerX = 1;
+    private int playerY = 1;
+    private int moveSpeed = 1;
 
     private BufferedImage offScreenImage;
-    private boolean[][] blockMap;
+    private boolean[][] blockMap; //mappa collisione blocchi fissi
 
     public Map() {
         setPreferredSize(new Dimension(width * blockSize + 1, height * blockSize + 1));
@@ -106,28 +106,32 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        float newX = playerX;
-        float newY = playerY;
+        int newX = playerX;
+        int newY = playerY;
 
         switch (keyCode) {
             case KeyEvent.VK_UP:
-                if (!blockMap[Math.round(playerX)][Math.round(playerY - moveSpeed)]) {
+                if (!blockMap[(playerX)][(playerY - moveSpeed)]) {
                     newY -= moveSpeed;
+                    Client.inviaCoordinate(newX, newY);
                 }
                 break;
             case KeyEvent.VK_DOWN:
-                if (!blockMap[Math.round(playerX)][Math.round(playerY + moveSpeed)]) {
+                if (!blockMap[(playerX)][(playerY + moveSpeed)]) {
                     newY += moveSpeed;
+                    Client.inviaCoordinate(newX, newY);
                 }
                 break;
             case KeyEvent.VK_LEFT:
-                if (!blockMap[Math.round(playerX - moveSpeed)][Math.round(playerY)]) {
+                if (!blockMap[(playerX - moveSpeed)][(playerY)]) {
                     newX -= moveSpeed;
+                    Client.inviaCoordinate(newX, newY);
                 }
                 break;
             case KeyEvent.VK_RIGHT:
-                if (!blockMap[Math.round(playerX + moveSpeed)][Math.round(playerY)]) {
+                if (!blockMap[(playerX + moveSpeed)][(playerY)]) {
                     newX += moveSpeed;
+                    Client.inviaCoordinate(newX, newY);
                 }
                 break;
         }

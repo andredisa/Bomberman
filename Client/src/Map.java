@@ -12,39 +12,44 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     private final int width = 17;
     private final int height = 13;
     private final int blockSize = 40;
+    private final String wallImage = "img/tile_wall.png";
+    private final String grassImage = "img/tile_grass.png";
+
     private Image imgPlayer;
     private Timer timer;
 
-    private float playerX = 1;
-    private float playerY = 1;
+    private int playerX = 1;
+    private int playerY = 1;
+    private int moveSpeed = 1;
 
-    private float moveSpeed = 1;
     private BufferedImage offScreenImage;
-    private boolean[][] collisionMap;
+    private boolean[][] blockMap; //mappa collisione blocchi fissi
 
     public Map() {
         setPreferredSize(new Dimension(width * blockSize + 1, height * blockSize + 1));
-        setBackground(new Color(30, 70, 30));
+
         try {
-            imgPlayer = ImageIO.read(Map.class.getResource("img/player1.png"));
+            imgPlayer = ImageIO.read(Map.class.getResource("img/player2.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         setFocusable(true);
         addKeyListener(this);
-        timer = new Timer(1000 / 60, this);
+        timer = new Timer(1000 / 120, this);
         timer.start();
 
-        // controlli movimento giocatore
-        collisionMap = new boolean[width][height];
-        initializeCollisionMap();
+        initializeBlockMap();
     }
 
-    private void initializeCollisionMap() {
+    private void initializeBlockMap() {
+        blockMap = new boolean[width][height];
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if (i == 0 || j == 0 || i == width - 1 || j == height - 1 || (i % 2 == 0 && j % 2 == 0)) {
-                    collisionMap[i][j] = true;
+                if (i == 0 || j == 0 || i == width - 1 || j == height - 1 || i % 2 == 0 && j % 2 == 0) {
+                    blockMap[i][j] = true; // tile_wall
+                } else {
+                    blockMap[i][j] = false; // grass
                 }
             }
         }
@@ -64,14 +69,17 @@ public class Map extends JPanel implements KeyListener, ActionListener {
         drawBlocks(offScreenGraphics);
         drawPlayer(offScreenGraphics);
         g.drawImage(offScreenImage, 0, 0, this);
+
+        offScreenGraphics.dispose();
     }
 
     private void drawBlocks(Graphics g) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if (collisionMap[i][j]) {
-                    BloccoFisso bf = new BloccoFisso(i, j);
-                    bf.paintBlock(g);
+                if (blockMap[i][j]) {
+                    g.drawImage(loadImage(wallImage), i * blockSize, j * blockSize, blockSize, blockSize, this);
+                } else {
+                    g.drawImage(loadImage(grassImage), i * blockSize, j * blockSize, blockSize, blockSize, this);
                 }
             }
         }
@@ -82,6 +90,15 @@ public class Map extends JPanel implements KeyListener, ActionListener {
                 this);
     }
 
+    private Image loadImage(String path) {
+        try {
+            return ImageIO.read(Map.class.getResource(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     @Override
     public void keyTyped(KeyEvent e) {
     }
@@ -89,28 +106,38 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     @Override
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
+        int newX = playerX;
+        int newY = playerY;
+
         switch (keyCode) {
             case KeyEvent.VK_UP:
-                if (!collisionMap[(int) (playerX)][(int) (playerY - moveSpeed)]) {
-                    playerY -= moveSpeed;
+                if (!blockMap[(playerX)][(playerY - moveSpeed)]) {
+                    newY -= moveSpeed;
+                    Client.inviaCoordinate(newX, newY);
                 }
                 break;
             case KeyEvent.VK_DOWN:
-                if (!collisionMap[(int) (playerX)][(int) (playerY + moveSpeed)]) {
-                    playerY += moveSpeed;
+                if (!blockMap[(playerX)][(playerY + moveSpeed)]) {
+                    newY += moveSpeed;
+                    Client.inviaCoordinate(newX, newY);
                 }
                 break;
             case KeyEvent.VK_LEFT:
-                if (!collisionMap[(int) (playerX - moveSpeed)][(int) (playerY)]) {
-                    playerX -= moveSpeed;
+                if (!blockMap[(playerX - moveSpeed)][(playerY)]) {
+                    newX -= moveSpeed;
+                    Client.inviaCoordinate(newX, newY);
                 }
                 break;
             case KeyEvent.VK_RIGHT:
-                if (!collisionMap[(int) (playerX + moveSpeed)][(int) (playerY)]) {
-                    playerX += moveSpeed;
+                if (!blockMap[(playerX + moveSpeed)][(playerY)]) {
+                    newX += moveSpeed;
+                    Client.inviaCoordinate(newX, newY);
                 }
                 break;
         }
+
+        playerX = newX;
+        playerY = newY;
         repaint();
     }
 
@@ -122,5 +149,4 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     public void actionPerformed(ActionEvent e) {
         repaint();
     }
-
 }

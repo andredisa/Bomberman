@@ -2,17 +2,17 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.io.IOException;
 
-class BloccoFisso {
+class BloccoDistruttibile {
     private Image blockImage;
     private int x;
     private int y;
 
-    public BloccoFisso(int x, int y) {
+    public BloccoDistruttibile(int x, int y) {
         this.x = x;
         this.y = y;
 
         try {
-            blockImage = ImageIO.read(Map.class.getResource("img/blocco.png"));
+            blockImage = ImageIO.read(Map.class.getResource("img/tile_wood.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }

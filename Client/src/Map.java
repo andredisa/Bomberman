@@ -6,6 +6,9 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.imageio.ImageIO;
 
 public class Map extends JPanel implements KeyListener, ActionListener {
@@ -14,6 +17,7 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     private final int blockSize = 40;
     private final String wallImage = "img/tile_wall.png";
     private final String grassImage = "img/tile_grass.png";
+    private final String woodImage = "img/tile_wood.png";
 
     private Image imgPlayer;
     private Timer timer;
@@ -23,9 +27,15 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     private int moveSpeed = 1;
 
     private BufferedImage offScreenImage;
-    private boolean[][] blockMap; // mappa collisione blocchi fissi
+    List<BloccoFisso> blockMap = new ArrayList<>();
+    List<BloccoDistruttibile> woodBlock = new ArrayList<>();
+
+    BloccoFisso bf;
+    BloccoDistruttibile bd;
 
     public Map() {
+        bf = new BloccoFisso(0, 0);
+        bd = new BloccoDistruttibile(0, 0);
         setPreferredSize(new Dimension(width * blockSize + 1, height * blockSize + 1));
         try {
             imgPlayer = ImageIO.read(Map.class.getResource("img/player2.png"));
@@ -42,16 +52,36 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     }
 
     private void initializeBlockMap() {
-        blockMap = new boolean[width][height];
+
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 if (i == 0 || j == 0 || i == width - 1 || j == height - 1 || i % 2 == 0 && j % 2 == 0) {
-                    blockMap[i][j] = true; // tile_wall
-                } else {
-                    blockMap[i][j] = false; // grass
+                    this.bf = new BloccoFisso(i, j);
+                    this.blockMap.add(bf);
+                } else if ((i >= playerX && i <= playerX + 2) && (j >= playerY && j <= playerY + 2)) {
+                    this.bd = new BloccoDistruttibile(i, j);
+                    this.woodBlock.add(bd);
                 }
             }
         }
+    }
+
+    public boolean isBloccoFisso(int x, int y) {
+        for (int i = 0; i < blockMap.size(); i++) {
+            if (x == blockMap.get(i).getX() && y == blockMap.get(i).getY()) {
+                return true; // è un blocco fisso
+            }
+        }
+        return false; // non è un blocco fisso
+    }
+
+    public boolean isBloccoDistruttibile(int x, int y) {
+        for (int i = 0; i < woodBlock.size(); i++) {
+            if (x == woodBlock.get(i).getX() && y == woodBlock.get(i).getY()) {
+                return true; // è un blocco fisso
+            }
+        }
+        return false; // non è un blocco fisso
     }
 
     @Override
@@ -75,8 +105,10 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     private void drawBlocks(Graphics g) {
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if (blockMap[i][j]) {
+                if (isBloccoFisso(i, j)) {
                     g.drawImage(loadImage(wallImage), i * blockSize, j * blockSize, blockSize, blockSize, this);
+                } else if (!isBloccoDistruttibile(i, j)) {
+                    g.drawImage(loadImage(woodImage), i * blockSize, j * blockSize, blockSize, blockSize, this);
                 } else {
                     g.drawImage(loadImage(grassImage), i * blockSize, j * blockSize, blockSize, blockSize, this);
                 }
@@ -109,39 +141,35 @@ public class Map extends JPanel implements KeyListener, ActionListener {
         int newY = playerY;
         boolean bombaPiazzata = false;
 
-
         switch (keyCode) {
             case KeyEvent.VK_UP:
-                if (!blockMap[(playerX)][(playerY - moveSpeed)]) {
+                if (!isBloccoFisso(playerX, playerY - moveSpeed)) {
                     newY -= moveSpeed;
                     Client.inviaCoordinate(newX, newY, bombaPiazzata);
                 }
                 break;
             case KeyEvent.VK_DOWN:
-                if (!blockMap[(playerX)][(playerY + moveSpeed)]) {
+                if (!isBloccoFisso(playerX, playerY + moveSpeed)) {
                     newY += moveSpeed;
                     Client.inviaCoordinate(newX, newY, bombaPiazzata);
                 }
                 break;
             case KeyEvent.VK_LEFT:
-                if (!blockMap[(playerX - moveSpeed)][(playerY)]) {
+                if (!isBloccoFisso(playerX - moveSpeed, playerY)) {
                     newX -= moveSpeed;
                     Client.inviaCoordinate(newX, newY, bombaPiazzata);
                 }
                 break;
             case KeyEvent.VK_RIGHT:
-                if (!blockMap[(playerX + moveSpeed)][(playerY)]) {
+                if (!isBloccoFisso(playerX + moveSpeed, playerY)) {
                     newX += moveSpeed;
                     Client.inviaCoordinate(newX, newY, bombaPiazzata);
                 }
                 break;
             case KeyEvent.VK_SPACE:
-                if (!blockMap[(playerX + moveSpeed)][(playerY)]) {
-                    bombaPiazzata = true;
-                    //disegnaBomba
-                    Client.inviaCoordinate(newX, newY, bombaPiazzata);
-                
-                }
+                bombaPiazzata = true;
+                // disegnaBomba
+                Client.inviaCoordinate(newX, newY, bombaPiazzata);
                 break;
         }
 

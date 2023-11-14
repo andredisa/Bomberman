@@ -1,4 +1,5 @@
-import java.io.*;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.net.Socket;
 
 public class Client {
@@ -13,11 +14,11 @@ public class Client {
         }
     }
 
-    public static void inviaCoordinate(int x, int y) {
+    public static void inviaCoordinate(int x, int y, boolean b) {
         try {
-            ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-            oos.writeObject(x + ";" + y);
-            oos.flush();
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            dos.writeUTF(x + ";" + y + ";" + b);
+            dos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -23,11 +23,10 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     private int moveSpeed = 1;
 
     private BufferedImage offScreenImage;
-    private boolean[][] blockMap; //mappa collisione blocchi fissi
+    private boolean[][] blockMap; // mappa collisione blocchi fissi
 
     public Map() {
         setPreferredSize(new Dimension(width * blockSize + 1, height * blockSize + 1));
-
         try {
             imgPlayer = ImageIO.read(Map.class.getResource("img/player2.png"));
         } catch (IOException e) {
@@ -108,30 +107,40 @@ public class Map extends JPanel implements KeyListener, ActionListener {
         int keyCode = e.getKeyCode();
         int newX = playerX;
         int newY = playerY;
+        boolean bombaPiazzata = false;
+
 
         switch (keyCode) {
             case KeyEvent.VK_UP:
                 if (!blockMap[(playerX)][(playerY - moveSpeed)]) {
                     newY -= moveSpeed;
-                    Client.inviaCoordinate(newX, newY);
+                    Client.inviaCoordinate(newX, newY, bombaPiazzata);
                 }
                 break;
             case KeyEvent.VK_DOWN:
                 if (!blockMap[(playerX)][(playerY + moveSpeed)]) {
                     newY += moveSpeed;
-                    Client.inviaCoordinate(newX, newY);
+                    Client.inviaCoordinate(newX, newY, bombaPiazzata);
                 }
                 break;
             case KeyEvent.VK_LEFT:
                 if (!blockMap[(playerX - moveSpeed)][(playerY)]) {
                     newX -= moveSpeed;
-                    Client.inviaCoordinate(newX, newY);
+                    Client.inviaCoordinate(newX, newY, bombaPiazzata);
                 }
                 break;
             case KeyEvent.VK_RIGHT:
                 if (!blockMap[(playerX + moveSpeed)][(playerY)]) {
                     newX += moveSpeed;
-                    Client.inviaCoordinate(newX, newY);
+                    Client.inviaCoordinate(newX, newY, bombaPiazzata);
+                }
+                break;
+            case KeyEvent.VK_SPACE:
+                if (!blockMap[(playerX + moveSpeed)][(playerY)]) {
+                    bombaPiazzata = true;
+                    //disegnaBomba
+                    Client.inviaCoordinate(newX, newY, bombaPiazzata);
+                
                 }
                 break;
         }

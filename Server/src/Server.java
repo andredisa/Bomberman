@@ -3,6 +3,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+    public static final int WIDTH = 17;
+    public static final int HEIGTH = 13;
+    public static final int BLOCK_SIZE = 40;
+
     public static void main(String[] args) {
         Game gm = new Game();
 

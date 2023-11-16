@@ -32,10 +32,13 @@ public class Menu {
         connectButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Simula la connessione al server
-                isConnected = true;
-                Client.connect();
-                JOptionPane.showMessageDialog(frame, "Connessione effettuata");
+                if (!isConnected) {
+                    isConnected = true;
+                    Client.connect();
+                    JOptionPane.showMessageDialog(frame, "Connessione effettuata");
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Sei già connesso al server!");
+                }
             }
         });
 
@@ -57,11 +60,15 @@ public class Menu {
             }
         });
 
-        quitButton = new JButton("Quit");
+        quitButton = new JButton("Exit");
         quitButton.setAlignmentX(Component.CENTER_ALIGNMENT);
         quitButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if (isConnected) {
+                    // Chiudi la connessione prima di uscire
+                    Client.closeConnection();
+                }
                 System.exit(0);
             }
         });

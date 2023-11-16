@@ -17,11 +17,11 @@ public class Server {
                 // id=1 x=1 y=1
                 // id=2 x=15 y=11
                 int playerId = gm.size() + 1;
-                Giocatore player = new Giocatore(1, 1, playerId);
+                Giocatore player = new Giocatore(1, 1, playerId, socket);
                 gm.add(player);
 
                 // thread per gestire il giocatore
-                ThreadGiocatore thPlayer = new ThreadGiocatore(player, socket, gm);
+                ThreadGiocatore thPlayer = new ThreadGiocatore(player, gm);
                 thPlayer.start();
             }
         } catch (IOException e) {

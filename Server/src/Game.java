@@ -24,5 +24,8 @@ public class Game {
         player.setPosX(newX);
         player.setPosY(newY);
     }
+    public List<Giocatore> getPlayers() {
+        return this.players;
+    }
 
 }

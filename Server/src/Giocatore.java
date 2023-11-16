@@ -76,4 +76,7 @@ public class Giocatore {
     public void setNumBombe(int numBombe) {
         this.numBombe = numBombe;
     }
+    public String toString(){
+        return this.posX + ";" + this.posY + ";" + this.bombaPiazzata;
+    }
 }

@@ -2,7 +2,6 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.net.Socket;
 
 public class ThreadGiocatore extends Thread {
     private Giocatore player;
@@ -10,13 +9,18 @@ public class ThreadGiocatore extends Thread {
 
     private DataInputStream dis;
     private DataOutputStream dos;
+    private GestioneBlocchi gb;
 
-    public ThreadGiocatore(Giocatore player, Game game) {
+    public ThreadGiocatore(Giocatore player, Game game, GestioneBlocchi gb) {
         this.player = player;
         this.game = game;
+        this.gb = gb;
         try {
             dis = new DataInputStream(this.player.getSocket().getInputStream());
             dos = new DataOutputStream(this.player.getSocket().getOutputStream());
+
+            inviaBlocchiFissi();
+            inviaBlocchiDistruttibili();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -25,7 +29,9 @@ public class ThreadGiocatore extends Thread {
     public void run() {
         try {
             while (true) {
-                String command = dis.readUTF();
+                inviaBlocchiDistruttibili();
+
+                /*String command = dis.readUTF();
                 System.out.println("Coordinate ricevute: " + command);
 
                 String[] coordinates = command.split(";");
@@ -34,12 +40,12 @@ public class ThreadGiocatore extends Thread {
                 boolean b = Boolean.parseBoolean(coordinates[2]);
 
                 // aggiorna la posizione del giocatore
-                game.movePlayer(player, newX, newY);
+                game.movePlayer(player, newX, newY);*/
 
-                inviaPosizioniAiClient();
+                // controllo bomba
+
+                // inviaPosizioniAiClient();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         } finally {
             game.removePlayer(player);
             try {
@@ -47,6 +53,40 @@ public class ThreadGiocatore extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public void inviaBlocchiFissi() {
+        try {
+            System.out.println("Invio dati blocchi fissi");
+            Messaggio m = new Messaggio("blocchiFissi");
+
+            for (BloccoFisso b : gb.getBlockMap()) {
+                m.aggiungiDato(b.toString());
+            }
+
+            ObjectOutputStream oos = new ObjectOutputStream(dos);
+            oos.writeObject(m);
+            oos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void inviaBlocchiDistruttibili() {
+        try {
+            System.out.println("Invio dati blocchi distruttibili");
+            Messaggio m = new Messaggio("blocchiDistruttibili");
+
+            for (BloccoDistruttibile b : gb.getWoodBlock()) {
+                m.aggiungiDato(b.toString());
+            }
+
+            ObjectOutputStream oos = new ObjectOutputStream(dos);
+            oos.writeObject(m);
+            oos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

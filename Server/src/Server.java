@@ -1,14 +1,17 @@
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
     public static final int WIDTH = 17;
-    public static final int HEIGTH = 13;
+    public static final int HEIGHT = 13;
     public static final int BLOCK_SIZE = 40;
 
     public static void main(String[] args) {
         Game gm = new Game();
+        GestioneBlocchi gb = new GestioneBlocchi();
 
         try {
             ServerSocket serverSocket = new ServerSocket(5000);
@@ -25,11 +28,12 @@ public class Server {
                 gm.add(player);
 
                 // thread per gestire il giocatore
-                ThreadGiocatore thPlayer = new ThreadGiocatore(player, gm);
+                ThreadGiocatore thPlayer = new ThreadGiocatore(player, gm, gb);
                 thPlayer.start();
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 }

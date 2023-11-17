@@ -6,7 +6,6 @@ import java.io.ObjectOutputStream;
 public class ThreadGiocatore extends Thread {
     private Giocatore player;
     private Game game;
-
     private DataInputStream dis;
     private DataOutputStream dos;
     private GestioneBlocchi gb;
@@ -15,9 +14,10 @@ public class ThreadGiocatore extends Thread {
         this.player = player;
         this.game = game;
         this.gb = gb;
+
         try {
-            dis = new DataInputStream(this.player.getSocket().getInputStream());
-            dos = new DataOutputStream(this.player.getSocket().getOutputStream());
+            dis = new DataInputStream(player.getSocket().getInputStream());
+            dos = new DataOutputStream(player.getSocket().getOutputStream());
 
             inviaBlocchiFissi();
             inviaBlocchiDistruttibili();
@@ -31,22 +31,31 @@ public class ThreadGiocatore extends Thread {
             while (true) {
                 inviaBlocchiDistruttibili();
 
-                /*String command = dis.readUTF();
+                String command = dis.readUTF();
                 System.out.println("Coordinate ricevute: " + command);
 
                 String[] coordinates = command.split(";");
                 int newX = Integer.parseInt(coordinates[0]);
                 int newY = Integer.parseInt(coordinates[1]);
-                boolean b = Boolean.parseBoolean(coordinates[2]);
+                boolean piazzaBomba = Boolean.parseBoolean(coordinates[2]);
 
                 // aggiorna la posizione del giocatore
-                game.movePlayer(player, newX, newY);*/
+                game.movePlayer(player, newX, newY);
 
-                // controllo bomba
+                if (piazzaBomba) {
+                    Bomba bomba = new Bomba(player.getPosX(), player.getPosY(), player.getNumBombe(), game);
+                    game.addBomba(bomba);
 
-                // inviaPosizioniAiClient();
+                    // Crea e avvia il thread della bomba
+                    ThreadBomba thBomba = new ThreadBomba(bomba, game);
+                    thBomba.start();
+                }
+                inviaPosizioniAiClient();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
+            // Chiudi la connessione del giocatore e rimuovilo dal gioco
             game.removePlayer(player);
             try {
                 player.getSocket().close();
@@ -56,7 +65,7 @@ public class ThreadGiocatore extends Thread {
         }
     }
 
-    public void inviaBlocchiFissi() {
+    private void inviaBlocchiFissi() {
         try {
             System.out.println("Invio dati blocchi fissi");
             Messaggio m = new Messaggio("blocchiFissi");
@@ -73,7 +82,7 @@ public class ThreadGiocatore extends Thread {
         }
     }
 
-    public void inviaBlocchiDistruttibili() {
+    private void inviaBlocchiDistruttibili() {
         try {
             System.out.println("Invio dati blocchi distruttibili");
             Messaggio m = new Messaggio("blocchiDistruttibili");
@@ -90,7 +99,7 @@ public class ThreadGiocatore extends Thread {
         }
     }
 
-    public void inviaPosizioniAiClient() {
+    private void inviaPosizioniAiClient() {
         try {
             Messaggio m = new Messaggio("datiGiocatori");
 

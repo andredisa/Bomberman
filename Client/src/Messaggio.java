@@ -1,10 +1,10 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Messaggio {
+public class Messaggio implements Serializable {
     private String tipo;
     private List<String> dati;
-
 
     public Messaggio() {
         this.tipo = "";

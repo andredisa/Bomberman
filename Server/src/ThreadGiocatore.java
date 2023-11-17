@@ -43,11 +43,11 @@ public class ThreadGiocatore extends Thread {
                 game.movePlayer(player, newX, newY);
 
                 if (piazzaBomba) {
+                    player.setBombaPiazzata(piazzaBomba);
                     Bomba bomba = new Bomba(player.getPosX(), player.getPosY(), player.getNumBombe(), game);
                     game.addBomba(bomba);
 
-                    // Crea e avvia il thread della bomba
-                    ThreadBomba thBomba = new ThreadBomba(bomba, game);
+                    ThreadBomba thBomba = new ThreadBomba(bomba, game, gb);
                     thBomba.start();
                 }
                 inviaPosizioniAiClient();
@@ -55,7 +55,6 @@ public class ThreadGiocatore extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            // Chiudi la connessione del giocatore e rimuovilo dal gioco
             game.removePlayer(player);
             try {
                 player.getSocket().close();

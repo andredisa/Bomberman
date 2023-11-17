@@ -5,20 +5,31 @@ public class Bomba {
     private int x;
     private int y;
     private int power;
+    private Game game;
 
-    public Bomba(int x, int y, int power) {
+    public Bomba(int x, int y, int power,Game game) {
         this.x = x;
         this.y = y;
         this.power = power;
+        this.game = game;
     }
 
-    public void explode(List<Giocatore> giocatori) {
+    public void explode(List<Giocatore> giocatori,GestioneBlocchi gestioneBlocchi) {
         try {
             Thread.sleep(2000);
 
             List<Giocatore> playersInRange = getPlayersInRange(giocatori);
             for (Giocatore g : playersInRange) {
                 g.togliVita();
+                if (g.isMorto()) {
+                    game.removePlayer(g);
+                }
+            }
+            
+            for (BloccoDistruttibile blocco : gestioneBlocchi.woodBlock) {
+                if (gestioneBlocchi.isBloccoDistruttibile(blocco.getX(), blocco.getY())) {
+                    gestioneBlocchi.removeBloccoDistruttibile(blocco);
+                }
             }
 
         } catch (InterruptedException e) {

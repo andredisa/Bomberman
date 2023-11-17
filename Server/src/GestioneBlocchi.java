@@ -59,4 +59,8 @@ public class GestioneBlocchi {
         this.woodBlock = woodBlock;
     }
 
+    public void removeBloccoDistruttibile(BloccoDistruttibile blocco) {
+        woodBlock.remove(blocco);
+    }
+
 }

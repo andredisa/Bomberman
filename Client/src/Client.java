@@ -1,5 +1,6 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
+import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -32,9 +33,14 @@ public class Client {
     public static Messaggio riceviMessaggio() {
         try {
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+
             Messaggio messaggio = (Messaggio) ois.readObject();
-            System.out.println("Messaggio ricevuto: " + messaggio.toString());
+            System.out.println("Messaggio ricevuto: " + messaggio.getTipo());
             return messaggio;
+        } catch (EOFException e) {
+
+            System.out.println("Nessun messaggio disponibile al momento.");
+            return null;
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
             return null;

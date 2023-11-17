@@ -55,6 +55,9 @@ public class Map extends JPanel implements KeyListener {
                     case "blocchiDistruttibili":
                         blocchiDistruttibili = ma.getDati();
                         break;
+                    case "datiGiocatori":
+                        giocatori = ma.getDati();
+                        break;
                     default:
                         System.out.println("Unhandled message type: " + messageType);
                         break;
@@ -72,7 +75,7 @@ public class Map extends JPanel implements KeyListener {
         disegnaCampo(buffer.getGraphics());
         disegnaBlocchi(buffer.getGraphics(), blocchiFissi, wallImage);
         disegnaBlocchi(buffer.getGraphics(), blocchiDistruttibili, woodImage);
-        disegnaPlayer(buffer.getGraphics());
+        disegnaGiocatori(buffer.getGraphics(), giocatori);
 
         g.drawImage(buffer, 0, 0, this);
     }
@@ -93,7 +96,24 @@ public class Map extends JPanel implements KeyListener {
             e.printStackTrace();
         }
     }
-
+     public void disegnaGiocatori(Graphics g, List<String> giocatori) {
+        try {
+            for (String s : giocatori) {
+                String[] blockData = s.split(";");
+                if (blockData.length == 3) {
+                    int x = Integer.parseInt(blockData[0].trim());
+                    int y = Integer.parseInt(blockData[1].trim());
+                    boolean b = Boolean.parseBoolean(blockData[2].trim());
+                    disegnaPlayer(g, x, y);
+                    if (b) {
+                        drawBlock(g, x, y, "img/bomb.png");
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     public void disegnaBlocchi(Graphics g, List<String> blocchi, String imagePath) {
         try {
             for (String s : blocchi) {
@@ -109,27 +129,37 @@ public class Map extends JPanel implements KeyListener {
         }
     }
 
-    public void disegnaPlayer(Graphics g) {
-        g.drawImage(imgPlayer, playerX * blockSize, playerY * blockSize, blockSize, blockSize, null);
+    public void disegnaPlayer(Graphics g , int x , int y) {
+        g.drawImage(imgPlayer, x * blockSize, y * blockSize, blockSize, blockSize, null);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-        int key = e.getKeyCode();
-        switch (key) {
-            case KeyEvent.VK_LEFT:
-                playerX -= moveSpeed;
-                break;
-            case KeyEvent.VK_RIGHT:
-                playerX += moveSpeed;
-                break;
+        int keyCode = e.getKeyCode();
+        int newX = playerX;
+        int newY = playerY;
+        boolean bombaPiazzata = false;
+        switch (keyCode) {
             case KeyEvent.VK_UP:
-                playerY -= moveSpeed;
+                newY -= moveSpeed;
                 break;
             case KeyEvent.VK_DOWN:
-                playerY += moveSpeed;
+                newY += moveSpeed;
+                break;
+            case KeyEvent.VK_LEFT:
+                newX -= moveSpeed;
+                break;
+            case KeyEvent.VK_RIGHT:
+                newX += moveSpeed;
+                break;
+            case KeyEvent.VK_SPACE:
+                bombaPiazzata = true;
                 break;
         }
+        playerX = newX;
+        playerY = newY;
+
+        Client.inviaCoordinate(newX, newY, bombaPiazzata);
         repaint();
     }
 

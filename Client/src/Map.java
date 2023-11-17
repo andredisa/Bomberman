@@ -1,7 +1,6 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -9,9 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.imageio.ImageIO;
+public class Map extends JPanel implements KeyListener {
 
-public class Map extends JPanel implements KeyListener, ActionListener {
     private final int width = 17;
     private final int height = 13;
     private final int blockSize = 40;
@@ -20,23 +18,19 @@ public class Map extends JPanel implements KeyListener, ActionListener {
     private final String woodImage = "img/tile_wood.png";
 
     private Image imgPlayer;
-    private Timer timer;
-
+    private BufferedImage buffer;
     private int playerX = 1;
     private int playerY = 1;
     private int moveSpeed = 1;
 
-    private BufferedImage offScreenImage;
-    List<BloccoFisso> blockMap = new ArrayList<>();
-    List<BloccoDistruttibile> woodBlock = new ArrayList<>();
-
-    BloccoFisso bf;
-    BloccoDistruttibile bd;
+    private List<String> blocchiFissi = new ArrayList<>();
+    private List<String> blocchiDistruttibili = new ArrayList<>();
+    private List<String> giocatori = new ArrayList<>();
 
     public Map() {
-        bf = new BloccoFisso(0, 0);
-        bd = new BloccoDistruttibile(0, 0);
         setPreferredSize(new Dimension(width * blockSize + 1, height * blockSize + 1));
+        buffer = new BufferedImage(width * blockSize, height * blockSize, BufferedImage.TYPE_INT_ARGB);
+
         try {
             imgPlayer = ImageIO.read(Map.class.getResource("img/player2.png"));
         } catch (IOException e) {
@@ -45,86 +39,107 @@ public class Map extends JPanel implements KeyListener, ActionListener {
 
         setFocusable(true);
         addKeyListener(this);
-        timer = new Timer(1000 / 120, this);
-        timer.start();
     }
 
-    public void disegnaBlocchiFissi(){
+    public void gestisciMessaggio() {
         try {
-            Messaggio m = Client.riceviMessaggio();
-            if (m.getTipo() == "blocchiFissi") {
-                for (int index = 0; index < m.getDati().size(); index++) {
-                  //split x,y,imagePath
-                  //richiama il metodo che disegna il blocco
-               }
-            }
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-    }
+            Messaggio ma = Client.riceviMessaggio();
 
-    
-    public void disegnaBlocchiDistruttibili(){
-        try {
-            Messaggio m = Client.riceviMessaggio();
-            if (m.getTipo() == "blocchiDistruttibili") {
-               for (int index = 0; index < m.getDati().size(); index++) {
-                  //split x,y,imagePath
-                  //richiama il metodo che disegna il blocco
-               }
+            if (ma != null) {
+                String messageType = ma.getTipo();
+
+                switch (messageType) {
+                    case "blocchiFissi":
+                        blocchiFissi = ma.getDati();
+                        break;
+                    case "blocchiDistruttibili":
+                        blocchiDistruttibili = ma.getDati();
+                        break;
+                    default:
+                        System.out.println("Unhandled message type: " + messageType);
+                        break;
+                }
             }
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        gestisciMessaggio();
+        disegnaCampo(buffer.getGraphics());
+        disegnaBlocchi(buffer.getGraphics(), blocchiFissi, wallImage);
+        disegnaBlocchi(buffer.getGraphics(), blocchiDistruttibili, woodImage);
+        disegnaPlayer(buffer.getGraphics());
 
-        if (offScreenImage == null) {
-            offScreenImage = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_ARGB);
+        g.drawImage(buffer, 0, 0, this);
+    }
+
+    public void disegnaCampo(Graphics g) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                drawBlock(g, i, j, grassImage);
+            }
         }
-
-        Graphics offScreenGraphics = offScreenImage.getGraphics();
-        offScreenGraphics.setColor(getBackground());
-        offScreenGraphics.fillRect(0, 0, getWidth(), getHeight());
-        //drawBlocks(offScreenGraphics);
-        drawPlayer(offScreenGraphics);
-        g.drawImage(offScreenImage, 0, 0, this);
-
-        offScreenGraphics.dispose();
     }
 
-    private void drawPlayer(Graphics g) {
-        g.drawImage(imgPlayer, Math.round(playerX) * blockSize, Math.round(playerY) * blockSize, blockSize, blockSize,
-                this);
-    }
-
-    private Image loadImage(String path) {
+    public void drawBlock(Graphics g, int x, int y, String imagePath) {
         try {
-            return ImageIO.read(Map.class.getResource(path));
+            Image blockImage = ImageIO.read(Map.class.getResource(imagePath));
+            g.drawImage(blockImage, x * blockSize, y * blockSize, blockSize, blockSize, null);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
         }
     }
 
-    @Override
-    public void keyTyped(KeyEvent e) {
+    public void disegnaBlocchi(Graphics g, List<String> blocchi, String imagePath) {
+        try {
+            for (String s : blocchi) {
+                String[] blockData = s.split(";");
+                if (blockData.length == 3) {
+                    int x = Integer.parseInt(blockData[0].trim());
+                    int y = Integer.parseInt(blockData[1].trim());
+                    drawBlock(g, x, y, imagePath);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disegnaPlayer(Graphics g) {
+        g.drawImage(imgPlayer, playerX * blockSize, playerY * blockSize, blockSize, blockSize, null);
     }
 
     @Override
     public void keyPressed(KeyEvent e) {
-       
+        int key = e.getKeyCode();
+        switch (key) {
+            case KeyEvent.VK_LEFT:
+                playerX -= moveSpeed;
+                break;
+            case KeyEvent.VK_RIGHT:
+                playerX += moveSpeed;
+                break;
+            case KeyEvent.VK_UP:
+                playerY -= moveSpeed;
+                break;
+            case KeyEvent.VK_DOWN:
+                playerY += moveSpeed;
+                break;
+        }
+        repaint();
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
+        // Add any necessary code for key released events
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        repaint();
+    public void keyTyped(KeyEvent e) {
+        // Add any necessary code for key typed events
     }
 }

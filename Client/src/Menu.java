@@ -66,8 +66,8 @@ public class Menu {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (isConnected) {
-                    // Chiudi la connessione prima di uscire
-                    Client.closeConnection();
+                    //chiudi connessione
+                    //Client.closeConnection();
                 }
                 System.exit(0);
             }
@@ -82,11 +82,5 @@ public class Menu {
 
         frame.add(panel);
         frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            new Menu();
-        });
     }
 }

@@ -3,9 +3,11 @@ import java.util.List;
 
 public class Game {
     private List<Giocatore> players;
+    private List<Bomba> bombe;
 
     public Game() {
         this.players = new ArrayList<>();
+        this.bombe = new ArrayList<>();
     }
 
     public int size(){
@@ -26,6 +28,12 @@ public class Game {
     }
     public List<Giocatore> getPlayers() {
         return this.players;
+    }
+    public void removeBomba(Bomba bomba) {
+        this.bombe.remove(bomba);
+    }
+    public void addBomba(Bomba bomba) {
+        this.bombe.add(bomba);
     }
 
 }

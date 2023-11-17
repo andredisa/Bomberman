@@ -1,0 +1,25 @@
+@startuml
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Client" as player
+actor "Server" as server
+
+rectangle "Gioco Bomberman" {
+  player -- (Accedere al gioco)
+  player -- (Iniziare partita)
+  player -- (Muoversi nel campo di gioco)
+  player -- (Piazzare bomba)
+  player -- (Interagire con altri giocatori)
+  player -- (Terminare partita)
+
+  server -- (Gestire connessioni)
+  server -- (Inizializzare il campo di gioco)
+  server -- (Gestire movimenti e azioni)
+  server -- (Gestire collisioni ed esplosioni)
+  server -- (Aggiornare stato del gioco)
+  server -- (Terminare partita)
+}
+
+@enduml

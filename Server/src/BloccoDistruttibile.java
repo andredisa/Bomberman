@@ -24,4 +24,8 @@ public class BloccoDistruttibile {
     public void setY(int y) {
         this.y = y;
     }
+
+    public String toString() {
+        return this.x + ";" + this.y + ";" + this.blockImage;
+    }
 }

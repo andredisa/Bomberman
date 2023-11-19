@@ -20,7 +20,7 @@ public class Giocatore {
         this.bombaPiazzata = false;
         this.morto = false;
         this.inGioco = false;
-        this.numVite = 0;
+        this.numVite = 5;
         this.numBombe = 0;
         this.socket = socket;
     }

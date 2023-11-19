@@ -29,7 +29,6 @@ public class ThreadGiocatore extends Thread {
     public void run() {
         try {
             while (true) {
-                inviaBlocchiDistruttibili();
 
                 String command = dis.readUTF();
                 System.out.println("Coordinate ricevute: " + command);
@@ -39,20 +38,27 @@ public class ThreadGiocatore extends Thread {
                 int newY = Integer.parseInt(coordinates[1]);
                 boolean piazzaBomba = Boolean.parseBoolean(coordinates[2]);
 
-                // aggiorna la posizione del giocatore
-                game.movePlayer(player, newX, newY);
+                if (!(gb.isBloccoDistruttibile(newX, newY) || gb.isBloccoFisso(newX, newY))) {
+                    // aggiorna la posizione del giocatore
+                    game.movePlayer(player, newX, newY);
+                }
 
                 if (piazzaBomba) {
                     player.setBombaPiazzata(piazzaBomba);
-                    Bomba bomba = new Bomba(player.getPosX(), player.getPosY(), player.getNumBombe(), game);
+                    Bomba bomba = new Bomba(player.getPosX(), player.getPosY(), 1, game);
                     game.addBomba(bomba);
 
                     ThreadBomba thBomba = new ThreadBomba(bomba, game, gb);
                     thBomba.start();
+                    thBomba.join();
+
+                    inviaBlocchiDistruttibili();
                 }
                 inviaPosizioniAiClient();
             }
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             game.removePlayer(player);
@@ -85,7 +91,7 @@ public class ThreadGiocatore extends Thread {
         try {
             System.out.println("Invio dati blocchi distruttibili");
             Messaggio m = new Messaggio("blocchiDistruttibili");
-
+            System.out.println(gb.getWoodBlock().size());
             for (BloccoDistruttibile b : gb.getWoodBlock()) {
                 m.aggiungiDato(b.toString());
             }

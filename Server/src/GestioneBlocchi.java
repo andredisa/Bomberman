@@ -4,7 +4,7 @@ import java.util.List;
 public class GestioneBlocchi {
     List<BloccoFisso> blockMap;
     List<BloccoDistruttibile> woodBlock;
-
+    List<Giocatore> giocatori;
     Giocatore player;
 
     public GestioneBlocchi() {
@@ -40,9 +40,17 @@ public class GestioneBlocchi {
             if (x == woodBlock.get(i).getX() && y == woodBlock.get(i).getY())
                 return true;
         }
-        return false; // non è un blocco fisso
+        return false; 
     }
 
+    public void removeBloccoDistruttibile(int x, int y) {
+        for (BloccoDistruttibile blocco : woodBlock) {
+            if (blocco.getX() == x && blocco.getY() == y) {
+                woodBlock.remove(blocco);
+                break;
+            }
+        }
+    }
     public List<BloccoFisso> getBlockMap() {
         return blockMap;
     }

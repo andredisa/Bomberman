@@ -7,14 +7,14 @@ public class Bomba {
     private int power;
     private Game game;
 
-    public Bomba(int x, int y, int power,Game game) {
+    public Bomba(int x, int y, int power, Game game) {
         this.x = x;
         this.y = y;
         this.power = power;
         this.game = game;
     }
 
-    public void explode(List<Giocatore> giocatori,GestioneBlocchi gestioneBlocchi) {
+    public void explode(List<Giocatore> giocatori, GestioneBlocchi gestioneBlocchi) {
         try {
             Thread.sleep(2000);
 
@@ -25,15 +25,19 @@ public class Bomba {
                     game.removePlayer(g);
                 }
             }
-            
-            for (BloccoDistruttibile blocco : gestioneBlocchi.woodBlock) {
-                if (gestioneBlocchi.isBloccoDistruttibile(blocco.getX(), blocco.getY())) {
-                    gestioneBlocchi.removeBloccoDistruttibile(blocco);
-                }
-            }
-
+            removeDistruttibiliInRange(gestioneBlocchi);
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void removeDistruttibiliInRange(GestioneBlocchi gestioneBlocchi) {
+        for (int i = x - power; i <= x + power; i++) {
+            for (int j = y - power; j <= y + power; j++) {
+                if (gestioneBlocchi.isBloccoDistruttibile(i, j)) {
+                    gestioneBlocchi.removeBloccoDistruttibile(i, j);
+                }
+            }
         }
     }
 
@@ -48,8 +52,8 @@ public class Bomba {
     }
 
     private boolean isPlayerInRange(Giocatore g) {
-        return (g.getPosX() == this.x && Math.abs(g.getPosY() - this.y) <= this.power) ||
-               (g.getPosY() == this.y && Math.abs(g.getPosX() - this.x) <= this.power);
+        return (Math.abs(g.getPosX() - this.x) <= this.power && g.getPosY() == this.y) ||
+                (Math.abs(g.getPosY() - this.y) <= this.power && g.getPosX() == this.x);
     }
 
     public int getX() {

@@ -4,6 +4,8 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 
 public class Client {
     private static Socket socket;
@@ -30,21 +32,22 @@ public class Client {
         }
     }
 
-    public static Messaggio riceviMessaggio() {
+    public static Messaggio riceviMessaggio() throws SocketException {
         try {
+            socket.setSoTimeout(1000);
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-
             Messaggio messaggio = (Messaggio) ois.readObject();
-            System.out.println("Messaggio ricevuto: " + messaggio.getTipo());
-            return messaggio;
-        } catch (EOFException e) {
 
-            System.out.println("Nessun messaggio disponibile al momento.");
-            return null;
+            System.out.println("messaggio ricevuto: " + messaggio.getTipo());
+            return messaggio;
+        } catch (SocketTimeoutException e) {
+            System.out.println("Timeout: Nessun messaggio disponibile al momento.");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            return null;
+        } finally {
+            socket.setSoTimeout(0);
         }
+        return null;
     }
 
     public static void closeConnection() {

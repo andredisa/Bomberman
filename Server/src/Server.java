@@ -17,17 +17,21 @@ public class Server {
             ServerSocket serverSocket = new ServerSocket(5000);
             System.out.println("Server avviato. In attesa di connessioni...");
 
-            while (true) {
+            for (int i = 0; i < 2; i++) {
                 Socket socket = serverSocket.accept();
                 System.out.println("Connessione accettata da: " + socket);
 
-                // id=1 x=1 y=1
-                // id=2 x=15 y=11
                 int playerId = gm.size() + 1;
-                Giocatore player = new Giocatore(1, 1, playerId, socket);
-                gm.add(player);
+                Giocatore player;
 
-                // thread per gestire il giocatore
+                if (playerId == 1) {
+                    player = new Giocatore(1, 1, playerId, socket);
+                } else {
+                    player = new Giocatore(15, 11, playerId, socket);
+                }
+
+                gm.add(player);
+                inviaPosizioniAiClient(gm, socket);
                 ThreadGiocatore thPlayer = new ThreadGiocatore(player, gm, gb);
                 thPlayer.start();
             }
@@ -36,4 +40,20 @@ public class Server {
         }
     }
 
+    private static void inviaPosizioniAiClient(Game gm, Socket socket) {
+        try {
+            DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            Messaggio m = new Messaggio("datiGiocatori");
+
+            for (Giocatore player : gm.getPlayers()) {
+                m.aggiungiDato(player.toString());
+            }
+
+            ObjectOutputStream oos = new ObjectOutputStream(dos);
+            oos.writeObject(m);
+            oos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

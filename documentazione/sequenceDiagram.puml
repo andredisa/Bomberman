@@ -1,0 +1,28 @@
+@startuml
+actor Utente as User
+participant Client
+participant Server
+participant Menu
+participant Map
+participant Messaggio
+
+User -> Menu: Avvia Applicazione
+Menu -> Client: Richiesta di Connessione
+Client -> Server: connect()
+Server -->> Client: Connesione Riuscita
+User -> Menu: Input Utente (Coordinate)
+Server -> Client: cordinate iniziali(x, y, bombaPiazzata)
+loop gioco
+    Client -> Map: MovimentoGiocatore(x, y, bombaPiazzata)
+    Map -> Messaggio: creaMessaggio("COORDINATE")
+    Messaggio -> Client: getOutputStream()
+    Client -> Server: dos.writeUTF("x;y;bombaPiazzata")
+    Server -> Server: Elabora Coordinate
+    Server -> Client: confermaRicezione()
+    Client -> Server: riceviMessaggio()
+    Client -> Map: disegnaBlocchi
+    Server -> Server: Costruisci Messaggio
+    Server -->> Client: Invia Messaggio
+end loop
+
+@enduml

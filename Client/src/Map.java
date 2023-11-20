@@ -18,8 +18,8 @@ public class Map extends JPanel implements KeyListener {
     public final static String PLAYER_IMAGE = "img/player2.png";
 
     private BufferedImage buffer;
-    public static int playerX = 1;
-    public static int playerY = 1;
+    public static int playerX = 0;
+    public static int playerY = 0;
     private int moveSpeed = 1;
     boolean bombaPiazzata = false;
 
@@ -59,6 +59,11 @@ public class Map extends JPanel implements KeyListener {
                     }
                 } else
                     break;
+            }
+            if (!giocatori.isEmpty()) {
+                String[] playerData = giocatori.get(0).split(";");
+                playerX = Integer.parseInt(playerData[0]);
+                playerY = Integer.parseInt(playerData[1]);
             }
             ClientView.drawField(buffer.getGraphics());
             ClientView.drawBlocks(buffer.getGraphics(), blocchiFissi, WALL_IMAGE);

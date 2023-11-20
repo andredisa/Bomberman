@@ -5,10 +5,12 @@ import java.util.List;
 public class Messaggio implements Serializable {
     private String tipo;
     private List<String> dati;
+    private int idGiocatore;
 
     public Messaggio() {
         this.tipo = "";
         this.dati = new ArrayList<>();
+        this.idGiocatore = 0;
     }
 
     public Messaggio(String tipo) {
@@ -34,6 +36,14 @@ public class Messaggio implements Serializable {
 
     public void setDati(List<String> dati) {
         this.dati = dati;
+    }
+
+    public int getIdGiocatore() {
+        return idGiocatore;
+    }
+
+    public void setIdGiocatore(int idGiocatore) {
+        this.idGiocatore = idGiocatore;
     }
 
 }

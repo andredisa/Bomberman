@@ -91,7 +91,7 @@ public class ThreadGiocatore extends Thread {
         try {
             System.out.println("Invio dati blocchi distruttibili");
             Messaggio m = new Messaggio("blocchiDistruttibili");
-            System.out.println(gb.getWoodBlock().size());
+
             for (BloccoDistruttibile b : gb.getWoodBlock()) {
                 m.aggiungiDato(b.toString());
             }

@@ -1,6 +1,5 @@
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
@@ -14,6 +13,7 @@ public class Client {
 
     public static void connect() {
         try {
+            //ip = 172.16.102.115
             socket = new Socket("localhost", 5000);
             dis = new DataInputStream(socket.getInputStream());
             dos = new DataOutputStream(socket.getOutputStream());
@@ -41,7 +41,7 @@ public class Client {
             System.out.println("messaggio ricevuto: " + messaggio.getTipo());
             return messaggio;
         } catch (SocketTimeoutException e) {
-            System.out.println("Timeout: Nessun messaggio disponibile al momento.");
+            System.out.println("Nessun messaggio disponibile al momento.");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {

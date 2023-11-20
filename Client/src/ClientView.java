@@ -30,9 +30,7 @@ public class ClientView {
                 int x = Integer.parseInt(playerData[0].trim());
                 int y = Integer.parseInt(playerData[1].trim());
                 boolean hasBomb = Boolean.parseBoolean(playerData[2].trim());
-    
-                Map.playerX = x;
-                Map.playerY = y;
+
                 drawPlayer(g, x, y, playerImagePath);
                 if (hasBomb) {
                     drawBlock(g, x, y, bombImagePath);

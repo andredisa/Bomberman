@@ -5,22 +5,26 @@ public class GestioneBlocchi {
     List<BloccoFisso> blockMap;
     List<BloccoDistruttibile> woodBlock;
     List<Giocatore> giocatori;
-    Giocatore player;
 
-    public GestioneBlocchi() {
+    public GestioneBlocchi(List<Giocatore> giocatori) {
         this.blockMap = new ArrayList<>();
         this.woodBlock = new ArrayList<>();
+        this.giocatori = giocatori;
         // this.player = p;
 
         initializeBlockMap();
     }
 
     private void initializeBlockMap() {
+        System.out.println(giocatori.size());
         for (int i = 0; i < Server.WIDTH; i++) {
             for (int j = 0; j < Server.HEIGHT; j++) {
                 if (i == 0 || j == 0 || i == Server.WIDTH - 1 || j == Server.HEIGHT - 1 || i % 2 == 0 && j % 2 == 0) {
                     this.blockMap.add(new BloccoFisso(i, j));
-                } else if (!(Math.abs(i - 1) <= 2 && Math.abs(j - 1) <= 2)) {
+                } else if (giocatori.size() >= 2 && !(Math.abs(i - giocatori.get(0).getPosX()) <= 2
+                        && Math.abs(j - giocatori.get(0).getPosY()) <= 2) &&
+                        !(Math.abs(i - giocatori.get(1).getPosX()) <= 2
+                                && Math.abs(j - giocatori.get(1).getPosY()) <= 2)) {
                     this.woodBlock.add(new BloccoDistruttibile(i, j));
                 }
             }
@@ -40,7 +44,7 @@ public class GestioneBlocchi {
             if (x == woodBlock.get(i).getX() && y == woodBlock.get(i).getY())
                 return true;
         }
-        return false; 
+        return false;
     }
 
     public void removeBloccoDistruttibile(int x, int y) {
@@ -51,6 +55,7 @@ public class GestioneBlocchi {
             }
         }
     }
+
     public List<BloccoFisso> getBlockMap() {
         return blockMap;
     }

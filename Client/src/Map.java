@@ -15,11 +15,13 @@ public class Map extends JPanel implements KeyListener {
     public final static String GRASS_IMAGE = "img/tile_grass.png";
     public final static String WOOD_IMAGE = "img/tile_wood.png";
     public final static String BOMB_IMAGE = "img/bomb.png";
-    public final static String PLAYER_IMAGE = "img/player2.png";
+    public final static String PLAYER_IMAGE = "img/explosion.png";
+
+    private int clientID;
 
     private BufferedImage buffer;
-    public static int playerX = 0;
-    public static int playerY = 0;
+    public static int playerX = 1;
+    public static int playerY = 1;
     private int moveSpeed = 1;
     boolean bombaPiazzata = false;
 
@@ -42,13 +44,17 @@ public class Map extends JPanel implements KeyListener {
                 Messaggio msg = Client.riceviMessaggio();
                 if (msg != null) {
                     String messageType = msg.getTipo();
-
+    
                     switch (messageType) {
+                        case "idClient":
+                            clientID = msg.getIdGiocatore();
+                            break;
                         case "blocchiFissi":
                             blocchiFissi = msg.getDati();
                             break;
                         case "blocchiDistruttibili":
                             blocchiDistruttibili = msg.getDati();
+                            System.out.println("Ricevuto blocchiDistruttibili n blocchi: " + blocchiDistruttibili.size());
                             break;
                         case "datiGiocatori":
                             giocatori = msg.getDati();
@@ -61,19 +67,24 @@ public class Map extends JPanel implements KeyListener {
                     break;
             }
             if (!giocatori.isEmpty()) {
-                String[] playerData = giocatori.get(0).split(";");
-                playerX = Integer.parseInt(playerData[0]);
-                playerY = Integer.parseInt(playerData[1]);
+                for (int i = 0; i < giocatori.size(); i++) {
+                    String[] playerData = giocatori.get(i).split(";");
+                    // Confronta l'ID come stringa, assicurati che clientID sia di tipo int
+                    if (playerData.length >= 4 && playerData[3].equals(Integer.toString(clientID))) {
+                        playerX = Integer.parseInt(playerData[0]);
+                        playerY = Integer.parseInt(playerData[1]);
+                    }
+                }
             }
             ClientView.drawField(buffer.getGraphics());
             ClientView.drawBlocks(buffer.getGraphics(), blocchiFissi, WALL_IMAGE);
             ClientView.drawBlocks(buffer.getGraphics(), blocchiDistruttibili, WOOD_IMAGE);
             ClientView.drawPlayers(buffer.getGraphics(), giocatori, PLAYER_IMAGE, BOMB_IMAGE);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    
 
     @Override
     protected void paintComponent(Graphics g) {

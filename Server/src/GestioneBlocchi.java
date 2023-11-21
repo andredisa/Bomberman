@@ -24,12 +24,14 @@ public class GestioneBlocchi {
                 } else if (giocatori.size() >= 2 && !(Math.abs(i - giocatori.get(0).getPosX()) <= 2
                         && Math.abs(j - giocatori.get(0).getPosY()) <= 2) &&
                         !(Math.abs(i - giocatori.get(1).getPosX()) <= 2
-                                && Math.abs(j - giocatori.get(1).getPosY()) <= 2)) {
+                                && Math.abs(j - giocatori.get(1).getPosY()) <= 2) && Math.random() < 0.4) {
+                    // Aggiungi blocchi distruttibili casualmente (probabilità del 40%)
                     this.woodBlock.add(new BloccoDistruttibile(i, j));
                 }
             }
         }
     }
+    
 
     public boolean isBloccoFisso(int x, int y) {
         for (int i = 0; i < blockMap.size(); i++) {

@@ -14,6 +14,7 @@ public class Server {
         Game gm = new Game();
         ServerSocket serverSocket = null;
         int connectedPlayers = 0;
+        ServerSender ss;
 
         try {
             serverSocket = new ServerSocket(5000);
@@ -25,6 +26,7 @@ public class Server {
                 System.out.println("Connessione accettata da: " + socket);
 
                 int playerId = gm.size() + 1;
+                System.out.println("Questo è il player id quando lo creo: " + playerId);
                 Giocatore player;
 
                 if (playerId == 1) {
@@ -36,21 +38,23 @@ public class Server {
                 }
 
                 gm.add(player);
+                inviaIdClient(socket, playerId);
                 connectedPlayers++;
 
                 if (connectedPlayers == NUM_PLAYERS) {
                     gb = new GestioneBlocchi(gm.getPlayers());
+                    ServerSender.setGiocatori(gm.getPlayers());
 
                     ThreadGiocatore thPlayer = new ThreadGiocatore(gm.getPlayers().get(0), gm, gb);
                     ThreadGiocatore thPlayer2 = new ThreadGiocatore(gm.getPlayers().get(1), gm, gb);
                     thPlayer.start();
                     thPlayer2.start();
-                    inviaPosizioniAiClient(gm, socket);
+                    ServerSender.inviaPosizioniGiocatori(gm);
                 }
 
             }
-
             System.out.println("Gioco iniziato");
+
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -64,21 +68,17 @@ public class Server {
         }
     }
 
-    private static void inviaPosizioniAiClient(Game gm, Socket socket) {
+    private static void inviaIdClient(Socket socket, int id) {
         try {
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
-            System.out.println("Inviato dati giocatori n giocatori: " + gm.getPlayers().size());
-            Messaggio m = new Messaggio("datiGiocatori");
-
-            for (Giocatore p : gm.getPlayers()) {
-                m.aggiungiDato(p.toString());
-            }
+            System.out.println("Invio id client: " + id);
+            Messaggio m = new Messaggio("idClient");
+            m.setIdGiocatore(id);
 
             ObjectOutputStream oos = new ObjectOutputStream(dos);
             oos.writeObject(m);
             oos.flush();
-
         } catch (IOException e) {
             e.printStackTrace();
         }

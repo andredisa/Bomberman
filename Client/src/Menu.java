@@ -53,6 +53,7 @@ public class Menu {
                     mapFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                     mapFrame.add(map);
                     mapFrame.pack();
+                    //frame.setVisible(false);
                     mapFrame.setVisible(true);
                 } else {
                     JOptionPane.showMessageDialog(frame, "Devi connetterti prima la server!");

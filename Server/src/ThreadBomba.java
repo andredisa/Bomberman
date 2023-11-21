@@ -13,7 +13,7 @@ public class ThreadBomba extends Thread {
 
     public void run() {
         try {
-            Thread.sleep(2000);
+            Thread.sleep(100);
 
             bomba.explode(game.getPlayers(), gestioneBlocchi);
 

@@ -26,13 +26,14 @@ public class ClientView {
     public static void drawPlayers(Graphics g, List<String> players, String playerImagePath, String bombImagePath) {
         for (String s : players) {
             String[] playerData = s.split(";");
-            if (playerData.length == 3) {
+            if (playerData.length == 4) {
                 int x = Integer.parseInt(playerData[0].trim());
                 int y = Integer.parseInt(playerData[1].trim());
                 boolean hasBomb = Boolean.parseBoolean(playerData[2].trim());
 
                 drawPlayer(g, x, y, playerImagePath);
                 if (hasBomb) {
+                    System.out.println("Disegno bomba");
                     drawBlock(g, x, y, bombImagePath);
                 }
             }

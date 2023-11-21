@@ -35,7 +35,7 @@ public class Giocatore {
     }
 
     public String toString() {
-        return this.posX + ";" + this.posY + ";" + this.bombaPiazzata;
+        return this.posX + ";" + this.posY + ";" + this.bombaPiazzata + ";" + this.id;
     }
 
     public Socket getSocket() {

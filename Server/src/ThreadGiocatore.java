@@ -7,7 +7,6 @@ public class ThreadGiocatore extends Thread {
     private Giocatore player;
     private Game game;
     private DataInputStream dis;
-    private DataOutputStream dos;
     private GestioneBlocchi gb;
 
     public ThreadGiocatore(Giocatore player, Game game, GestioneBlocchi gb) {
@@ -17,10 +16,8 @@ public class ThreadGiocatore extends Thread {
 
         try {
             dis = new DataInputStream(player.getSocket().getInputStream());
-            dos = new DataOutputStream(player.getSocket().getOutputStream());
-
-            inviaBlocchiFissi();
-            inviaBlocchiDistruttibili();
+            ServerSender.inviaBlocchiFissi(gb);
+            ServerSender.inviaBlocchiDistruttibili(gb);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,10 +48,9 @@ public class ThreadGiocatore extends Thread {
                     ThreadBomba thBomba = new ThreadBomba(bomba, game, gb);
                     thBomba.start();
                     thBomba.join();
-
-                    inviaBlocchiDistruttibili();
+                    ServerSender.inviaBlocchiDistruttibili(gb);
                 }
-                inviaPosizioniAiClient();
+                ServerSender.inviaPosizioniGiocatori(game);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -67,56 +63,6 @@ public class ThreadGiocatore extends Thread {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        }
-    }
-
-    private void inviaBlocchiFissi() {
-        try {
-            System.out.println("Invio dati blocchi fissi");
-            Messaggio m = new Messaggio("blocchiFissi");
-
-            for (BloccoFisso b : gb.getBlockMap()) {
-                m.aggiungiDato(b.toString());
-            }
-
-            ObjectOutputStream oos = new ObjectOutputStream(dos);
-            oos.writeObject(m);
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void inviaBlocchiDistruttibili() {
-        try {
-            System.out.println("Invio dati blocchi distruttibili");
-            Messaggio m = new Messaggio("blocchiDistruttibili");
-
-            for (BloccoDistruttibile b : gb.getWoodBlock()) {
-                m.aggiungiDato(b.toString());
-            }
-
-            ObjectOutputStream oos = new ObjectOutputStream(dos);
-            oos.writeObject(m);
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void inviaPosizioniAiClient() {
-        try {
-            Messaggio m = new Messaggio("datiGiocatori");
-
-            for (Giocatore player : game.getPlayers()) {
-                m.aggiungiDato(player.toString());
-            }
-
-            ObjectOutputStream oos = new ObjectOutputStream(dos);
-            oos.writeObject(m);
-            oos.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

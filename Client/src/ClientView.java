@@ -5,54 +5,48 @@ import java.util.List;
 public class ClientView {
 
     public static void drawField(Graphics g) {
-        for (int i = 0; i < Map.WIDTH; i++) {
-            for (int j = 0; j < Map.HEIGHT; j++) {
-                drawBlock(g, i, j, Map.GRASS_IMAGE);
-            }
-        }
+        drawGrid(g, Map.WIDTH, Map.HEIGHT, Map.GRASS_IMAGE);
     }
 
     public static void drawBlocks(Graphics g, List<String> blocks, String imagePath) {
-        for (String s : blocks) {
-            String[] blockData = s.split(";");
-            if (blockData.length == 3) {
-                int x = Integer.parseInt(blockData[0].trim());
-                int y = Integer.parseInt(blockData[1].trim());
-                drawBlock(g, x, y, imagePath);
+        drawItems(g, blocks, imagePath);
+    }
+
+    public static void drawPlayers(Graphics g, List<String> players, String playerImagePath) {
+        drawItems(g, players, playerImagePath);
+    }
+
+    public static void drawExplosion(Graphics g, List<String> explosions, String explosionImagePath) {
+        drawItems(g, explosions, explosionImagePath);
+    }
+
+    public static void drawBomb(Graphics g, List<String> bombs, String bombImagePath) {
+        drawItems(g, bombs, bombImagePath);
+    }
+
+    private static void drawItems(Graphics g, List<String> items, String imagePath) {
+        for (String s : items) {
+            String[] itemData = s.split(";");
+
+            int x = Integer.parseInt(itemData[0].trim());
+            int y = Integer.parseInt(itemData[1].trim());
+            drawImage(g, x, y, imagePath);
+
+        }
+    }
+
+    private static void drawGrid(Graphics g, int width, int height, String imagePath) {
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                drawImage(g, i, j, imagePath);
             }
         }
     }
-    
-    public static void drawPlayers(Graphics g, List<String> players, String playerImagePath, String bombImagePath) {
-        for (String s : players) {
-            String[] playerData = s.split(";");
-            if (playerData.length == 4) {
-                int x = Integer.parseInt(playerData[0].trim());
-                int y = Integer.parseInt(playerData[1].trim());
-                boolean hasBomb = Boolean.parseBoolean(playerData[2].trim());
 
-                drawPlayer(g, x, y, playerImagePath);
-                if (hasBomb) {
-                    System.out.println("Disegno bomba");
-                    drawBlock(g, x, y, bombImagePath);
-                }
-            }
-        }
-    }
-
-    private static void drawBlock(Graphics g, int x, int y, String imagePath) {
+    private static void drawImage(Graphics g, int x, int y, String imagePath) {
         try {
-            Image blockImage = new ImageIcon(Map.class.getResource(imagePath)).getImage();
-            g.drawImage(blockImage, x * Map.BLOCK_SIZE, y * Map.BLOCK_SIZE, Map.BLOCK_SIZE, Map.BLOCK_SIZE, null);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static void drawPlayer(Graphics g, int x, int y, String imagePath) {
-        try {
-            Image playerImage = new ImageIcon(Map.class.getResource(imagePath)).getImage();
-            g.drawImage(playerImage, x * Map.BLOCK_SIZE, y * Map.BLOCK_SIZE, Map.BLOCK_SIZE, Map.BLOCK_SIZE, null);
+            Image image = new ImageIcon(Map.class.getResource(imagePath)).getImage();
+            g.drawImage(image, x * Map.BLOCK_SIZE, y * Map.BLOCK_SIZE, Map.BLOCK_SIZE, Map.BLOCK_SIZE, null);
         } catch (Exception e) {
             e.printStackTrace();
         }

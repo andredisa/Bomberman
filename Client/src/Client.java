@@ -13,7 +13,7 @@ public class Client {
 
     public static void connect() {
         try {
-            //ip = 172.16.102.115
+            // ip = 172.16.102.115
             socket = new Socket("localhost", 5000);
             dis = new DataInputStream(socket.getInputStream());
             dos = new DataOutputStream(socket.getOutputStream());
@@ -34,14 +34,13 @@ public class Client {
 
     public static Messaggio riceviMessaggio() throws SocketException {
         try {
-            socket.setSoTimeout(1000);
+            socket.setSoTimeout(2000);
             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
             Messaggio messaggio = (Messaggio) ois.readObject();
 
-            System.out.println("messaggio ricevuto: " + messaggio.getTipo());
+            System.out.println("Messaggio ricevuto: " + messaggio.getTipo());
             return messaggio;
         } catch (SocketTimeoutException e) {
-            System.out.println("Nessun messaggio disponibile al momento.");
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {

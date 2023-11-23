@@ -10,7 +10,7 @@ public class Game {
         this.bombe = new ArrayList<>();
     }
 
-    public int size(){
+    public int size() {
         return this.players.size();
     }
 
@@ -26,14 +26,36 @@ public class Game {
         player.setPosX(newX);
         player.setPosY(newY);
     }
+
     public List<Giocatore> getPlayers() {
         return this.players;
     }
+
     public void removeBomba(Bomba bomba) {
         this.bombe.remove(bomba);
     }
+
     public void addBomba(Bomba bomba) {
         this.bombe.add(bomba);
     }
 
+    public List<Bomba> getBombs() {
+        return this.bombe;
+    }
+
+    public static List<String> giocatoriToString(List<Giocatore> giocatori) {
+        List<String> result = new ArrayList<>();
+        for (Giocatore giocatore : giocatori) {
+            result.add(giocatore.toString());
+        }
+        return result;
+    }
+
+    public static List<String> bombeToString(List<Bomba> bombe) {
+        List<String> result = new ArrayList<>();
+        for (Bomba bomba : bombe) {
+            result.add(bomba.toString());
+        }
+        return result;
+    }
 }

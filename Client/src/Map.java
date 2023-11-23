@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
@@ -32,9 +34,23 @@ public class Map extends JPanel implements KeyListener {
     private List<String> bomba = new ArrayList<>();
     private List<String> esplosione = new ArrayList<>();
 
+    private Timer timer;
+
     public Map() {
         setPreferredSize(new Dimension(WIDTH * BLOCK_SIZE + 1, HEIGHT * BLOCK_SIZE + 1));
         buffer = new BufferedImage(WIDTH * BLOCK_SIZE, HEIGHT * BLOCK_SIZE, BufferedImage.TYPE_INT_ARGB);
+
+        setFocusable(true);
+        addKeyListener(this);
+
+        timer = new Timer(8, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gestisciMessaggio();
+                repaint();
+            }
+        });
+        timer.start();
 
         setFocusable(true);
         addKeyListener(this);
@@ -98,7 +114,6 @@ public class Map extends JPanel implements KeyListener {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        gestisciMessaggio();
         g.drawImage(buffer, 0, 0, this);
     }
 
@@ -125,11 +140,8 @@ public class Map extends JPanel implements KeyListener {
                 bombaPiazzata = true;
                 break;
         }
-        // playerX = newX;
-        // playerY = newY;
 
         Client.inviaCoordinate(newX, newY, bombaPiazzata);
-        repaint();
     }
 
     @Override

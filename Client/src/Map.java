@@ -15,7 +15,8 @@ public class Map extends JPanel implements KeyListener {
     public final static String GRASS_IMAGE = "img/tile_grass.png";
     public final static String WOOD_IMAGE = "img/tile_wood.png";
     public final static String BOMB_IMAGE = "img/bomb.png";
-    public final static String PLAYER_IMAGE = "img/explosion.png";
+    public final static String PLAYER_IMAGE = "img/player3.png";
+    public final static String EXPLOSION_IMAGE = "img/explosion.png";
 
     private int clientID;
 
@@ -28,6 +29,8 @@ public class Map extends JPanel implements KeyListener {
     private List<String> blocchiFissi = new ArrayList<>();
     private List<String> blocchiDistruttibili = new ArrayList<>();
     private List<String> giocatori = new ArrayList<>();
+    private List<String> bomba = new ArrayList<>();
+    private List<String> esplosione = new ArrayList<>();
 
     public Map() {
         setPreferredSize(new Dimension(WIDTH * BLOCK_SIZE + 1, HEIGHT * BLOCK_SIZE + 1));
@@ -44,7 +47,7 @@ public class Map extends JPanel implements KeyListener {
                 Messaggio msg = Client.riceviMessaggio();
                 if (msg != null) {
                     String messageType = msg.getTipo();
-    
+
                     switch (messageType) {
                         case "idClient":
                             clientID = msg.getIdGiocatore();
@@ -54,10 +57,15 @@ public class Map extends JPanel implements KeyListener {
                             break;
                         case "blocchiDistruttibili":
                             blocchiDistruttibili = msg.getDati();
-                            System.out.println("Ricevuto blocchiDistruttibili n blocchi: " + blocchiDistruttibili.size());
-                            break;
+                           break;
                         case "datiGiocatori":
                             giocatori = msg.getDati();
+                            break;
+                        case "datiBomba":
+                            bomba = msg.getDati();
+                            break;
+                        case "datiEsplosione":
+                            esplosione = msg.getDati();
                             break;
                         default:
                             System.out.println("Unhandled message type: " + messageType);
@@ -79,12 +87,13 @@ public class Map extends JPanel implements KeyListener {
             ClientView.drawField(buffer.getGraphics());
             ClientView.drawBlocks(buffer.getGraphics(), blocchiFissi, WALL_IMAGE);
             ClientView.drawBlocks(buffer.getGraphics(), blocchiDistruttibili, WOOD_IMAGE);
-            ClientView.drawPlayers(buffer.getGraphics(), giocatori, PLAYER_IMAGE, BOMB_IMAGE);
+            ClientView.drawPlayers(buffer.getGraphics(), giocatori, PLAYER_IMAGE);
+            ClientView.drawBomb(buffer.getGraphics(), bomba, BOMB_IMAGE);
+            ClientView.drawExplosion(buffer.getGraphics(),esplosione,EXPLOSION_IMAGE);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
 
     @Override
     protected void paintComponent(Graphics g) {

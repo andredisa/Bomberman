@@ -13,11 +13,14 @@ public class ThreadBomba extends Thread {
 
     public void run() {
         try {
-            Thread.sleep(100);
+            ServerSender.inviaPosizioneBomba(game);
+            Thread.sleep(5000);
 
             bomba.explode(game.getPlayers(), gestioneBlocchi);
 
             game.removeBomba(bomba);
+
+            ServerSender.inviaBlocchiDistruttibili(gestioneBlocchi);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

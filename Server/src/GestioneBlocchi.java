@@ -16,7 +16,6 @@ public class GestioneBlocchi {
     }
 
     private void initializeBlockMap() {
-        System.out.println(giocatori.size());
         for (int i = 0; i < Server.WIDTH; i++) {
             for (int j = 0; j < Server.HEIGHT; j++) {
                 if (i == 0 || j == 0 || i == Server.WIDTH - 1 || j == Server.HEIGHT - 1 || i % 2 == 0 && j % 2 == 0) {
@@ -24,14 +23,13 @@ public class GestioneBlocchi {
                 } else if (giocatori.size() >= 2 && !(Math.abs(i - giocatori.get(0).getPosX()) <= 2
                         && Math.abs(j - giocatori.get(0).getPosY()) <= 2) &&
                         !(Math.abs(i - giocatori.get(1).getPosX()) <= 2
-                                && Math.abs(j - giocatori.get(1).getPosY()) <= 2) && Math.random() < 0.4) {
-                    // Aggiungi blocchi distruttibili casualmente (probabilità del 40%)
+                                && Math.abs(j - giocatori.get(1).getPosY()) <= 2)
+                        && Math.random() < 0.4) {
                     this.woodBlock.add(new BloccoDistruttibile(i, j));
                 }
             }
         }
     }
-    
 
     public boolean isBloccoFisso(int x, int y) {
         for (int i = 0; i < blockMap.size(); i++) {
@@ -76,6 +74,23 @@ public class GestioneBlocchi {
 
     public void removeBloccoDistruttibile(BloccoDistruttibile blocco) {
         woodBlock.remove(blocco);
+    }
+
+    public static List<String> blockMap_toString(List<BloccoFisso> blocchiFissi) {
+        List<String> result = new ArrayList<>();
+        for (BloccoFisso blocco : blocchiFissi) {
+            result.add(blocco.toString());
+            System.out.println(blocco.toString());
+        }
+        return result;
+    }
+
+    public static List<String> woodBlock_toString(List<BloccoDistruttibile> blocchiDistruttibili) {
+        List<String> result = new ArrayList<>();
+        for (BloccoDistruttibile blocco : blocchiDistruttibili) {
+            result.add(blocco.toString());
+        }
+        return result;
     }
 
 }

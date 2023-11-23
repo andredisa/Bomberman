@@ -14,7 +14,9 @@ public class Bomba {
         this.game = game;
     }
 
-    public void explode(List<Giocatore> giocatori, GestioneBlocchi gestioneBlocchi) {
+    public List<String> explode(List<Giocatore> giocatori, GestioneBlocchi gestioneBlocchi) {
+        List<String> distruttibiliDistrutti = new ArrayList<>();
+
         try {
             Thread.sleep(2000);
 
@@ -25,20 +27,32 @@ public class Bomba {
                     game.removePlayer(g);
                 }
             }
-            removeDistruttibiliInRange(gestioneBlocchi);
+            distruttibiliDistrutti = removeDistruttibiliInRange(gestioneBlocchi);
+            ServerSender.inviaBlocchiEsplosione(game, distruttibiliDistrutti);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        return distruttibiliDistrutti;
     }
 
-    private void removeDistruttibiliInRange(GestioneBlocchi gestioneBlocchi) {
+    private List<String> removeDistruttibiliInRange(GestioneBlocchi gestioneBlocchi) {
+        List<String> distruttibiliInRange = new ArrayList<>();
+
         for (int i = x - power; i <= x + power; i++) {
             for (int j = y - power; j <= y + power; j++) {
-                if (gestioneBlocchi.isBloccoDistruttibile(i, j)) {
+                if (isInRange(i, j, x, y, power) && gestioneBlocchi.isBloccoDistruttibile(i, j)) {
                     gestioneBlocchi.removeBloccoDistruttibile(i, j);
+                    distruttibiliInRange.add(i + ";" + j);
                 }
             }
         }
+
+        return distruttibiliInRange;
+    }
+
+    private boolean isInRange(int x, int y, int bombX, int bombY, int power) {
+        return Math.abs(x - bombX) + Math.abs(y - bombY) <= power;
     }
 
     private List<Giocatore> getPlayersInRange(List<Giocatore> giocatori) {
@@ -78,5 +92,9 @@ public class Bomba {
 
     public void setPower(int power) {
         this.power = power;
+    }
+
+    public String toString() {
+        return this.x + ";" + this.y;
     }
 }

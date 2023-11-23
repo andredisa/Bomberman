@@ -26,7 +26,6 @@ public class ThreadGiocatore extends Thread {
     public void run() {
         try {
             while (true) {
-
                 String command = dis.readUTF();
                 System.out.println("Coordinate ricevute: " + command);
 
@@ -47,14 +46,11 @@ public class ThreadGiocatore extends Thread {
 
                     ThreadBomba thBomba = new ThreadBomba(bomba, game, gb);
                     thBomba.start();
-                    thBomba.join();
-                    ServerSender.inviaBlocchiDistruttibili(gb);
                 }
                 ServerSender.inviaPosizioniGiocatori(game);
+                player.setBombaPiazzata(false);
             }
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
             game.removePlayer(player);

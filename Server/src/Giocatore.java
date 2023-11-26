@@ -22,7 +22,7 @@ public class Giocatore {
         this.bombaPiazzata = false;
         this.morto = false;
         this.inGioco = false;
-        this.numVite = 5;
+        this.numVite = 3;
         this.numBombe = 0;
         this.socket = socket;
     }

@@ -13,14 +13,10 @@ public class Map extends JPanel implements KeyListener {
     public final static int WIDTH = 17;
     public final static int HEIGHT = 13;
     public final static int BLOCK_SIZE = 40;
-    public final static String WALL_IMAGE = "img/tile_wall.png";
     public final static String GRASS_IMAGE = "img/tile_grass.png";
-    public final static String WOOD_IMAGE = "img/tile_wood.png";
-    public final static String BOMB_IMAGE = "img/bomb.png";
-    public final static String PLAYER_IMAGE = "img/player3.png";
     public final static String EXPLOSION_IMAGE = "img/explosion.png";
 
-    private int clientID;
+    public static int clientID;
 
     private BufferedImage buffer;
     public static int playerX = 1;
@@ -59,54 +55,54 @@ public class Map extends JPanel implements KeyListener {
 
     public void gestisciMessaggio() {
         try {
-            while (true) {
-                Messaggio msg = Client.riceviMessaggio();
-                if (msg != null) {
-                    String messageType = msg.getTipo();
-
-                    switch (messageType) {
-                        case "idClient":
-                            clientID = msg.getIdGiocatore();
-                            break;
-                        case "blocchiFissi":
-                            blocchiFissi = msg.getDati();
-                            break;
-                        case "blocchiDistruttibili":
-                            blocchiDistruttibili = msg.getDati();
-                           break;
-                        case "datiGiocatori":
-                            giocatori = msg.getDati();
-                            break;
-                        case "datiBomba":
-                            bomba = msg.getDati();
-                            break;
-                        case "datiEsplosione":
-                            esplosione = msg.getDati();
-                            break;
-                        default:
-                            System.out.println("Unhandled message type: " + messageType);
-                            break;
-                    }
-                } else
-                    break;
+            Messaggio msg = Client.riceviMessaggio();
+            while (msg != null) {
+                String messageType = msg.getTipo();
+                switch (messageType) {
+                    case "idClient":
+                        clientID = msg.getId();
+                        break;
+                    case "blocchiFissi":
+                        blocchiFissi = msg.getDati();
+                        break;
+                    case "blocchiDistruttibili":
+                        blocchiDistruttibili = msg.getDati();
+                        break;
+                    case "datiGiocatori":
+                        giocatori = msg.getDati();
+                        break;
+                    case "datiBomba":
+                        bomba = msg.getDati();
+                        break;
+                    case "datiEsplosione":
+                        esplosione = msg.getDati();
+                        break;
+                    default:
+                        System.out.println("Unhandled message type: " + messageType);
+                        break;
+                }
+                msg = Client.riceviMessaggio();
             }
+
             if (!giocatori.isEmpty()) {
                 for (int i = 0; i < giocatori.size(); i++) {
                     String[] playerData = giocatori.get(i).split(";");
                     // Confronta l'ID come stringa, assicurati che clientID sia di tipo int
-                    if (playerData.length >= 4 && playerData[3].equals(Integer.toString(clientID))) {
+                    if (playerData[3].equals(Integer.toString(clientID))) {
                         playerX = Integer.parseInt(playerData[0]);
                         playerY = Integer.parseInt(playerData[1]);
                     }
                 }
             }
             ClientView.drawField(buffer.getGraphics());
-            ClientView.drawBlocks(buffer.getGraphics(), blocchiFissi, WALL_IMAGE);
-            ClientView.drawBlocks(buffer.getGraphics(), blocchiDistruttibili, WOOD_IMAGE);
-            ClientView.drawPlayers(buffer.getGraphics(), giocatori, PLAYER_IMAGE);
-            ClientView.drawBomb(buffer.getGraphics(), bomba, BOMB_IMAGE);
-            ClientView.drawExplosion(buffer.getGraphics(),esplosione,EXPLOSION_IMAGE);
-        } catch (Exception e) {
+            ClientView.drawBlocks(buffer.getGraphics(), blocchiFissi);
+            ClientView.drawBlocks(buffer.getGraphics(), blocchiDistruttibili);
+            ClientView.drawPlayers(buffer.getGraphics(), giocatori);
+            ClientView.drawBomb(buffer.getGraphics(), bomba);
+            ClientView.drawExplosion(buffer.getGraphics(), esplosione);
+        } catch (
+
+        Exception e) {
             e.printStackTrace();
         }
     }

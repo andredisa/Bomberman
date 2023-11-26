@@ -14,7 +14,6 @@ public class Server {
         Game gm = new Game();
         ServerSocket serverSocket = null;
         int connectedPlayers = 0;
-        ServerSender ss;
 
         try {
             serverSocket = new ServerSocket(5000);
@@ -26,15 +25,14 @@ public class Server {
                 System.out.println("Connessione accettata da: " + socket);
 
                 int playerId = gm.size() + 1;
-                System.out.println("Questo è il player id quando lo creo: " + playerId);
                 Giocatore player;
 
                 if (playerId == 1) {
                     // primo giocatore
-                    player = new Giocatore(1, 1, playerId, socket);
+                    player = new Giocatore(1, 1, playerId, socket,"img/player1.png");
                 } else {
                     // secondo giocatore
-                    player = new Giocatore(15, 11, playerId, socket);
+                    player = new Giocatore(15, 11, playerId, socket, "img/player2.png");
                 }
 
                 gm.add(player);
@@ -71,10 +69,8 @@ public class Server {
     private static void inviaIdClient(Socket socket, int id) {
         try {
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-
-            System.out.println("Invio id client: " + id);
             Messaggio m = new Messaggio("idClient");
-            m.setIdGiocatore(id);
+            m.setId(id);
 
             ObjectOutputStream oos = new ObjectOutputStream(dos);
             oos.writeObject(m);

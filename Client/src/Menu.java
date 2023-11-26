@@ -66,10 +66,10 @@ public class Menu {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     if (isConnected) {
-                        Map map = new Map(); // Uncomment this line if needed
+                        Map map = new Map();
                         JFrame mapFrame = new JFrame("Map");
                         mapFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                        mapFrame.add(map); // Uncomment this line if needed
+                        mapFrame.add(map);
                         mapFrame.pack();
                         mapFrame.setVisible(true);
                     } else {

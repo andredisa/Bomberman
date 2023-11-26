@@ -17,6 +17,7 @@ public class Map extends JPanel implements KeyListener {
     public final static String EXPLOSION_IMAGE = "img/explosion.png";
 
     public static int clientID;
+    public static int idVincitore;
 
     private BufferedImage buffer;
     public static int playerX = 1;
@@ -77,6 +78,18 @@ public class Map extends JPanel implements KeyListener {
                     case "datiEsplosione":
                         esplosione = msg.getDati();
                         break;
+                    case "fineGioco":
+                        idVincitore = msg.getId();
+                        if (idVincitore == clientID) {
+                            this.setVisible(false);
+                            VictoryWindow vw = new VictoryWindow();
+                            vw.setVisible(true);
+                        } else {
+                            this.setVisible(false);
+                            DefeatWindow dw = new DefeatWindow();
+                            dw.setVisible(true);
+                        }
+                        break;
                     default:
                         System.out.println("Unhandled message type: " + messageType);
                         break;
@@ -100,7 +113,7 @@ public class Map extends JPanel implements KeyListener {
             ClientView.drawPlayers(buffer.getGraphics(), giocatori);
             ClientView.drawBomb(buffer.getGraphics(), bomba);
             ClientView.drawExplosion(buffer.getGraphics(), esplosione);
-            
+
         } catch (
 
         Exception e) {

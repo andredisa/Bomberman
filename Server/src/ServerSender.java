@@ -1,6 +1,8 @@
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.util.List;
 
 public class ServerSender {
@@ -15,14 +17,24 @@ public class ServerSender {
             System.out.println("Invio dati " + tipoMessaggio);
 
             for (Giocatore giocatore : giocatori) {
-                DataOutputStream dos = new DataOutputStream(giocatore.getSocket().getOutputStream());
-                Messaggio m = new Messaggio(tipoMessaggio);
+                Socket socket = giocatore.getSocket();
+                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
 
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                ObjectOutputStream oos = new ObjectOutputStream(baos);
+
+                Messaggio m = new Messaggio(tipoMessaggio);
                 m.setDati(dati);
 
-                ObjectOutputStream oos = new ObjectOutputStream(dos);
                 oos.writeObject(m);
                 oos.flush();
+
+                byte[] data = baos.toByteArray();
+                int dataSize = data.length;
+
+                dos.writeInt(dataSize); // Invia la lunghezza dei dati
+                dos.write(data); // Invia i dati effettivi
+                dos.flush();
             }
         } catch (IOException e) {
             e.printStackTrace();

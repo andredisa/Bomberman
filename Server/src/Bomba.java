@@ -43,7 +43,7 @@ public class Bomba {
 
         for (int i = x - power; i <= x + power; i++) {
             for (int j = y - power; j <= y + power; j++) {
-                if (isInRange(i, j, x, y, power) && gestioneBlocchi.isBloccoDistruttibile(i, j)) {
+                if (isInRange(i, j, x, y, power) && !gestioneBlocchi.isBloccoFisso(i, j)) {
                     distruttibiliInRange.add(i + ";" + j);
                 }
             }

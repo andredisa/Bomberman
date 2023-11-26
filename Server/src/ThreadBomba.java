@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 
 public class ThreadBomba extends Thread {
@@ -21,7 +22,9 @@ public class ThreadBomba extends Thread {
             game.removeBomba(bomba);
 
             ServerSender.inviaBlocchiDistruttibili(gestioneBlocchi);
-            //ServerSender.inviaPosizioneBomba(new Game());
+            ServerSender.inviaPosizioneBomba(new Game());
+            Thread.sleep(2000);
+            ServerSender.inviaBlocchiEsplosione(new Game(), new ArrayList<>());
 
         } catch (InterruptedException e) {
             e.printStackTrace();

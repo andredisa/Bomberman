@@ -10,13 +10,15 @@ public class Giocatore {
     private boolean inGioco;
     private int numVite;
     private int numBombe;
+    private String image;
 
     private Socket socket;
 
-    public Giocatore(int posX, int posY, int playerId, Socket socket) {
+    public Giocatore(int posX, int posY, int playerId, Socket socket, String image) {
         this.posX = posX;
         this.posY = posY;
         this.id = playerId;
+        this.image = image;
         this.bombaPiazzata = false;
         this.morto = false;
         this.inGioco = false;
@@ -35,7 +37,7 @@ public class Giocatore {
     }
 
     public String toString() {
-        return this.posX + ";" + this.posY + ";" + this.bombaPiazzata + ";" + this.id;
+        return this.posX + ";" + this.posY + ";" + this.image + ";" + this.id;
     }
 
     public Socket getSocket() {

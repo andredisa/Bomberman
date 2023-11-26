@@ -2,6 +2,7 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.List;
 
 public class ThreadGiocatore extends Thread {
     private Giocatore player;
@@ -47,6 +48,11 @@ public class ThreadGiocatore extends Thread {
                     ThreadBomba thBomba = new ThreadBomba(bomba, game, gb);
                     thBomba.start();
                 }
+                if (game.isGameOver()) {
+                    //invia i dati del vincitore
+                    int idVincitore = trovaIDVincitore(game.getPlayers());
+                    ServerSender.inviaFineGioco(idVincitore);
+                }
                 ServerSender.inviaPosizioniGiocatori(game);
                 player.setBombaPiazzata(false);
             }
@@ -60,5 +66,14 @@ public class ThreadGiocatore extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    private int trovaIDVincitore(List<Giocatore> giocatori) {
+        for (Giocatore g : giocatori) {
+            if (!g.isMorto()) {
+                return g.getId();
+            }
+        }
+        return 0;
     }
 }

@@ -73,7 +73,6 @@ public class GestioneBlocchi {
         List<String> result = new ArrayList<>();
         for (BloccoFisso blocco : blocchiFissi) {
             result.add(blocco.toString());
-            System.out.println(blocco.toString());
         }
         return result;
     }

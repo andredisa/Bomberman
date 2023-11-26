@@ -26,7 +26,7 @@ public class Bomba {
             for (Giocatore g : playersInRange) {
                 g.togliVita();
                 if (g.isMorto()) {
-                    game.removePlayer(g);
+                    game.setGameOver(true);
                 }
             }
             blocchiDistrutti.addAll(removeDistruttibiliInRange(gestioneBlocchi));

@@ -4,6 +4,7 @@ import java.util.List;
 public class Game {
     private List<Giocatore> players;
     private List<Bomba> bombe;
+    private boolean gameOver = false;
 
     public Game() {
         this.players = new ArrayList<>();
@@ -41,6 +42,14 @@ public class Game {
 
     public List<Bomba> getBombs() {
         return this.bombe;
+    }
+
+    public boolean isGameOver() {
+        return gameOver;
+    }
+
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
     }
 
     public static List<String> giocatoriToString(List<Giocatore> giocatori) {

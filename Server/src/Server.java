@@ -1,3 +1,4 @@
+import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -29,7 +30,7 @@ public class Server {
 
                 if (playerId == 1) {
                     // primo giocatore
-                    player = new Giocatore(1, 1, playerId, socket,"img/player1.png");
+                    player = new Giocatore(1, 1, playerId, socket, "img/player1.png");
                 } else {
                     // secondo giocatore
                     player = new Giocatore(15, 11, playerId, socket, "img/player2.png");
@@ -69,12 +70,20 @@ public class Server {
     private static void inviaIdClient(Socket socket, int id) {
         try {
             DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+
             Messaggio m = new Messaggio("idClient");
             m.setId(id);
-
-            ObjectOutputStream oos = new ObjectOutputStream(dos);
             oos.writeObject(m);
             oos.flush();
+
+            byte[] data = baos.toByteArray();
+            int dataSize = data.length;
+
+            dos.writeInt(dataSize); // Invia la lunghezza dei dati
+            dos.write(data); // Invia i dati effettivi
+            dos.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -31,14 +31,16 @@ public class ClientView {
     }
 
     private static void drawItems(Graphics g, List<String> items) {
-        for (String s : items) {
-            String[] itemData = s.split(";");
+        if (items != null) {
+            for (String s : items) {
+                String[] itemData = s.split(";");
 
-            int x = Integer.parseInt(itemData[0].trim());
-            int y = Integer.parseInt(itemData[1].trim());
-            String imagePath = itemData[2].trim();
+                int x = Integer.parseInt(itemData[0].trim());
+                int y = Integer.parseInt(itemData[1].trim());
+                String imagePath = itemData[2].trim();
 
-            drawImage(g, x, y, imagePath);
+                drawImage(g, x, y, imagePath);
+            }
         }
     }
 

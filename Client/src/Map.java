@@ -55,7 +55,7 @@ public class Map extends JPanel implements KeyListener {
 
     public void gestisciMessaggio() {
         try {
-            Messaggio msg = Client.riceviMessaggio();
+            Messaggio msg = Client.receiveMessage();
             while (msg != null) {
                 String messageType = msg.getTipo();
                 switch (messageType) {
@@ -81,7 +81,7 @@ public class Map extends JPanel implements KeyListener {
                         System.out.println("Unhandled message type: " + messageType);
                         break;
                 }
-                msg = Client.riceviMessaggio();
+                msg = Client.receiveMessage();
             }
 
             if (!giocatori.isEmpty()) {
@@ -100,6 +100,7 @@ public class Map extends JPanel implements KeyListener {
             ClientView.drawPlayers(buffer.getGraphics(), giocatori);
             ClientView.drawBomb(buffer.getGraphics(), bomba);
             ClientView.drawExplosion(buffer.getGraphics(), esplosione);
+            
         } catch (
 
         Exception e) {
@@ -137,7 +138,7 @@ public class Map extends JPanel implements KeyListener {
                 break;
         }
 
-        Client.inviaCoordinate(newX, newY, bombaPiazzata);
+        Client.sendCoordinates(newX, newY, bombaPiazzata);
     }
 
     @Override

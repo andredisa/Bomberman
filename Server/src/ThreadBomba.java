@@ -21,6 +21,8 @@ public class ThreadBomba extends Thread {
             game.removeBomba(bomba);
 
             ServerSender.inviaBlocchiDistruttibili(gestioneBlocchi);
+            //ServerSender.inviaPosizioneBomba(new Game());
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

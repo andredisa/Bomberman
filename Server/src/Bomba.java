@@ -6,19 +6,21 @@ public class Bomba {
     private int y;
     private int power;
     private Game game;
+    private String image;
 
     public Bomba(int x, int y, int power, Game game) {
         this.x = x;
         this.y = y;
         this.power = power;
         this.game = game;
+        this.image = "img/bomb.png";
     }
 
     public List<String> explode(List<Giocatore> giocatori, GestioneBlocchi gestioneBlocchi) {
-        List<String> distruttibiliDistrutti = new ArrayList<>();
+        List<String> blocchiDistrutti = new ArrayList<>();
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(1000);
 
             List<Giocatore> playersInRange = getPlayersInRange(giocatori);
             for (Giocatore g : playersInRange) {
@@ -27,13 +29,13 @@ public class Bomba {
                     game.removePlayer(g);
                 }
             }
-            distruttibiliDistrutti = removeDistruttibiliInRange(gestioneBlocchi);
-            ServerSender.inviaBlocchiEsplosione(game, distruttibiliDistrutti);
+            blocchiDistrutti.addAll(removeDistruttibiliInRange(gestioneBlocchi));
+            ServerSender.inviaBlocchiEsplosione(game, blocchiDistrutti);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        return distruttibiliDistrutti;
+        return blocchiDistrutti;
     }
 
     private List<String> removeDistruttibiliInRange(GestioneBlocchi gestioneBlocchi) {
@@ -42,11 +44,12 @@ public class Bomba {
         for (int i = x - power; i <= x + power; i++) {
             for (int j = y - power; j <= y + power; j++) {
                 if (isInRange(i, j, x, y, power) && gestioneBlocchi.isBloccoDistruttibile(i, j)) {
-                    gestioneBlocchi.removeBloccoDistruttibile(i, j);
                     distruttibiliInRange.add(i + ";" + j);
                 }
             }
         }
+
+        gestioneBlocchi.removeBlocchiDistruttibili(distruttibiliInRange);
 
         return distruttibiliInRange;
     }
@@ -95,6 +98,6 @@ public class Bomba {
     }
 
     public String toString() {
-        return this.x + ";" + this.y;
+        return this.x + ";" + this.y + ";" + this.image;
     }
 }

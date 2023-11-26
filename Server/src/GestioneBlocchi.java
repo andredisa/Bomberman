@@ -1,16 +1,15 @@
 import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class GestioneBlocchi {
-    List<BloccoFisso> blockMap;
-    List<BloccoDistruttibile> woodBlock;
-    List<Giocatore> giocatori;
+    private List<BloccoFisso> blockMap;
+    private List<BloccoDistruttibile> woodBlock;
+    private List<Giocatore> giocatori;
 
     public GestioneBlocchi(List<Giocatore> giocatori) {
         this.blockMap = new ArrayList<>();
         this.woodBlock = new ArrayList<>();
         this.giocatori = giocatori;
-        // this.player = p;
 
         initializeBlockMap();
     }
@@ -32,26 +31,20 @@ public class GestioneBlocchi {
     }
 
     public boolean isBloccoFisso(int x, int y) {
-        for (int i = 0; i < blockMap.size(); i++) {
-            if (x == blockMap.get(i).getX() && y == blockMap.get(i).getY())
-                return true;
-        }
-        return false;
+        return blockMap.stream().anyMatch(blocco -> blocco.getX() == x && blocco.getY() == y);
     }
 
     public boolean isBloccoDistruttibile(int x, int y) {
-        for (int i = 0; i < woodBlock.size(); i++) {
-            if (x == woodBlock.get(i).getX() && y == woodBlock.get(i).getY())
-                return true;
-        }
-        return false;
+        return woodBlock.stream().anyMatch(blocco -> blocco.getX() == x && blocco.getY() == y);
     }
 
-    public void removeBloccoDistruttibile(int x, int y) {
-        for (BloccoDistruttibile blocco : woodBlock) {
-            if (blocco.getX() == x && blocco.getY() == y) {
-                woodBlock.remove(blocco);
-                break;
+    public void removeBlocchiDistruttibili(List<String> distruttibili) {
+        Iterator<BloccoDistruttibile> iterator = woodBlock.iterator();
+        while (iterator.hasNext()) {
+            BloccoDistruttibile blocco = iterator.next();
+            String posizione = blocco.getX() + ";" + blocco.getY();
+            if (distruttibili.contains(posizione)) {
+                iterator.remove();
             }
         }
     }

@@ -23,7 +23,7 @@ public class Menu {
 
         // Imposta l'immagine di sfondo
         try {
-            File imageFile = new File("E:\\progettoTecno\\Client\\src\\img\\sfondo.png");
+            File imageFile = new File("\\Client\\src\\img\\sfondo.png");
             if (!imageFile.exists()) {
                 throw new IllegalArgumentException("File non trovato: " + imageFile.getAbsolutePath());
             }
@@ -106,14 +106,5 @@ public class Menu {
         }
 
         frame.setVisible(true);
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                new Menu();
-            }
-        });
     }
 }

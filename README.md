@@ -1,6 +1,5 @@
 # Bomberman Multiplayer
 
-**Bomberman Multiplayer** 
 Un'implementazione semplice di Bomberman in Java con supporto multiplayer.
 
 ## Caratteristiche principali
@@ -14,7 +13,7 @@ Un'implementazione semplice di Bomberman in Java con supporto multiplayer.
 ## Istruzioni per l'esecuzione
 
 1. **Server**: Esegui il server Bomberman eseguendo il file `Server.java`.
-2. **Client**: Esegui due istanze del client Bomberman eseguendo il file `Client.java` su due terminali diversi. Inserisci l'indirizzo IP del server per connetterti.
+2. **Client**: Esegui due istanze del client Bomberman eseguendo il file `Main.java` su due terminali diversi. Inserisci l'indirizzo IP del server per connetterti.
 
 ## Configurazione
 
@@ -23,6 +22,6 @@ Un'implementazione semplice di Bomberman in Java con supporto multiplayer.
 
 Divertiti a giocare a Bomberman Multiplayer!
 
-Gioco sviluppato da: 
+Gioco sviluppato da:  
 -El Mellalou Abderrahman 
 -Disanti Andrea

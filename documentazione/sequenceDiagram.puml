@@ -9,7 +9,7 @@ participant Messaggio
 User -> Menu: Avvia Applicazione
 Menu -> Client: Richiesta di Connessione
 Client -> Server: connect()
-Server -->> Client: Connesione Riuscita
+Server --> Client: Connesione Riuscita
 User -> Menu: Input Utente (Coordinate)
 Server -> Client: cordinate iniziali(x, y, bombaPiazzata)
 loop gioco
@@ -24,5 +24,7 @@ loop gioco
     Server -> Server: Costruisci Messaggio
     Server -->> Client: Invia Messaggio
 end loop
+Server -> Client: messaggio fine gioco
+Client -> Menu: schermata vittoria/sconfitta
 
 @enduml

@@ -1,0 +1,183 @@
+@startuml
+
+package server {
+
+    class BloccoDistruttibile {
+        - blockImage: String
+        - x: int
+        - y: int
+        + BloccoDistruttibile(x: int, y: int)
+        + getX(): int
+        + setX(x: int)
+        + getY(): int
+        + setY(y: int)
+        + toString(): String
+    }
+
+    class BloccoFisso {
+        - blockImage: String
+        - x: int
+        - y: int
+        + BloccoFisso(x: int, y: int)
+        + getX(): int
+        + setX(x: int)
+        + getY(): int
+        + setY(y: int)
+        + toString(): String
+    }
+
+    class Bomba {
+        - x: int
+        - y: int
+        - power: int
+        - game: Game
+        - image: String
+        + Bomba(int x, int y, int power, Game game)
+        + explode(List<Giocatore> giocatori, GestioneBlocchi gestioneBlocchi): List<String>
+        - removeDistruttibiliInRange(GestioneBlocchi gestioneBlocchi): List<String>
+        - isInRange(int x, int y, int bombX, int bombY, int power): boolean
+        - getPlayersInRange(List<Giocatore> giocatori): List<Giocatore>
+        - isPlayerInRange(Giocatore g): boolean
+        + getX(): int
+        + setX(int x): void
+        + getY(): int
+        + setY(int y): void
+        + getPower(): int
+        + setPower(int power): void
+        + toString(): String
+    }
+
+    class Game {
+        - players: List<Giocatore>
+        - bombe: List<Bomba>
+        - gameOver: boolean
+        + Game()
+        + size(): int
+        + add(Giocatore player): void
+        + removePlayer(Giocatore player): void
+        + movePlayer(Giocatore player, int newX, int newY): void
+        + getPlayers(): List<Giocatore>
+        + removeBomba(Bomba bomba): void
+        + addBomba(Bomba bomba): void
+        + getBombs(): List<Bomba>
+        + isGameOver(): boolean
+        + setGameOver(boolean gameOver): void
+        + giocatoriToString(List<Giocatore> giocatori): List<String>
+        + bombeToString(List<Bomba> bombe): List<String>
+    }
+
+    class GestioneBlocchi {
+        - blockMap: List<BloccoFisso>
+        - woodBlock: List<BloccoDistruttibile>
+        - giocatori: List<Giocatore>
+        + GestioneBlocchi(List<Giocatore> giocatori)
+        - initializeBlockMap(): void
+        + isBloccoFisso(int x, int y): boolean
+        + isBloccoDistruttibile(int x, int y): boolean
+        + removeBlocchiDistruttibili(List<String> distruttibili): void
+        + getBlockMap(): List<BloccoFisso>
+        + setBlockMap(List<BloccoFisso> blockMap): void
+        + getWoodBlock(): List<BloccoDistruttibile>
+        + setWoodBlock(List<BloccoDistruttibile> woodBlock): void
+        + removeBloccoDistruttibile(BloccoDistruttibile blocco): void
+        + blockMap_toString(List<BloccoFisso> blocchiFissi): List<String>
+        + woodBlock_toString(List<BloccoDistruttibile> blocchiDistruttibili): List<String>
+    }
+
+    class Giocatore {
+        - posX: int
+        - posY: int
+        - id: int
+        - bombaPiazzata: boolean
+        - morto: boolean
+        - inGioco: boolean
+        - numVite: int
+        - numBombe: int
+        - image: String
+        - socket: Socket
+        + Giocatore(int posX, int posY, int playerId, Socket socket, String image)
+        + togliVita(): void
+        + toString(): String
+        + getSocket(): Socket
+        + getPosX(): int
+        + setPosX(int posX): void
+        + getPosY(): int
+        + setPosY(int posY): void
+        + getId(): int
+        + setId(int id): void
+        + isBombaPiazzata(): boolean
+        + setBombaPiazzata(boolean bombaPiazzata): void
+        + isMorto(): boolean
+        + setMorto(boolean morto): void
+        + isInGioco(): boolean
+        + setInGioco(boolean inGioco): void
+        + getNumVite(): int
+        + setNumVite(int numVite): void
+        + getNumBombe(): int
+        + setNumBombe(int numBombe): void
+    }
+
+    class Messaggio {
+        - tipo: String
+        - dati: List<String>
+        - Id: int
+        + Messaggio(String tipo)
+        + getTipo(): String
+        + setTipo(String tipo): void
+        + aggiungiDato(String d): void
+        + getDati(): List<String>
+        + setDati(List<String> dati): void
+        + getId(): int
+        + setId(int Id): void
+    }
+
+    class Server {
+        + WIDTH: int
+        + HEIGHT: int
+        + BLOCK_SIZE: int
+        + NUM_PLAYERS: int
+        + main(String[] args): void
+        - inviaIdClient(Socket socket, int id): void
+    }
+
+    class ServerSender {
+        - giocatori: List<Giocatore>
+        + setGiocatori(List<Giocatore> giocatori): void
+        - inviaDati(String tipoMessaggio, List<String> dati, int id): void
+        + inviaBlocchiFissi(GestioneBlocchi gb): void
+        + inviaBlocchiDistruttibili(GestioneBlocchi gb): void
+        + inviaPosizioniGiocatori(Game game): void
+        + inviaPosizioneBomba(Game game): void
+        + inviaBlocchiEsplosione(Game game, List<String> blocchi): void
+        + inviaFineGioco(int idVincitore): void
+    }
+
+    class ThreadBomba {
+        - bomba: Bomba
+        - game: Game
+        - gestioneBlocchi: GestioneBlocchi
+        + ThreadBomba(Bomba bomba, Game game, GestioneBlocchi gestioneBlocchi)
+        + run(): void
+    }
+
+    class ThreadGiocatore {
+        - player: Giocatore
+        - game: Game
+        - dis: DataInputStream
+        - gb: GestioneBlocchi
+        + ThreadGiocatore(Giocatore player, Game game, GestioneBlocchi gb)
+        + run(): void
+        - trovaIDVincitore(List<Giocatore> giocatori): int
+    }
+}
+
+
+ThreadBomba --|> Thread : extends
+ThreadGiocatore --|> Thread : extends
+Server --|> ServerSender : uses
+ServerSender --|> Game : uses
+ServerSender --|> GestioneBlocchi : uses
+ThreadBomba --|> Bomba : uses
+ThreadGiocatore --|> Giocatore : uses
+
+@enduml

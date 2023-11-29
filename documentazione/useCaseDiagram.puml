@@ -14,12 +14,12 @@ rectangle "Gioco Bomberman" {
   player -- (Interagire con altri giocatori)
   player -- (Terminare partita)
 
-  server -- (Gestire connessioni)
-  server -- (Inizializzare il campo di gioco)
-  server -- (Gestire movimenti e azioni)
-  server -- (Gestire collisioni ed esplosioni)
-  server -- (Aggiornare stato del gioco)
-  server -- (Terminare partita)
+  (Gestire connessioni) -- server
+  (Inizializzare il campo di gioco) -- server
+  (Gestire movimenti e azioni) -- server
+  (Gestire esplosioni) -- server
+  (Aggiornare stato del gioco) -- server
+  (Terminare partita) -- server
 }
 
 @enduml

@@ -1,0 +1,102 @@
+package client {
+    class Client {
+        - SERVER_IP: localhost
+        - SERVER_PORT : 5000
+        - socket: Socket
+        - dis: DataInputStream
+        - dos: DataOutputStream
+        + connect()
+        + sendCoordinates(int x, int y, boolean bombPlaced)
+        + receiveMessage()
+        + closeConnection()
+    }
+
+    class ClientView {
+        + drawField(g: Graphics)
+        + drawBlocks(g: Graphics, blocks: List<String>, imagePath: String)
+        + drawPlayers(g: Graphics, players: List<String>, playerImagePath: String, bombImagePath: String)
+        + drawExplosion(Graphics g, List<String> explosions)
+        + drawBomb(Graphics g, List<String> bombs)
+        + drawItems(Graphics g, List<String> items)
+        + drawGrid(Graphics g, int width, int height, String imagePath)
+        + drawImage(Graphics g, int x, int y, String imagePath)
+    }
+
+    class DefeatWindow {
+        - imageIcon : createImageIcon("img/sconfitta.png")
+        + DefeatWindow()
+        + createImageIcon(String path)
+    }
+
+    class Main {
+        + main(args: String[])
+    }
+
+    class Map {
+        + WIDTH: final int = 17
+        + HEIGHT: final int = 13
+        + BLOCK_SIZE: final int = 40
+        + GRASS_IMAGE: final String = "img/tile_grass.png"
+        + EXPLOSION_IMAGE: final String = "img/explosion.png"
+        + clientID: int
+        + idVincitore: int
+        - buffer: BufferedImage
+        + playerX: int
+        + playerY: int
+        - moveSpeed: int
+        - bombaPiazzata: boolean
+        - blocchiFissi: List<String>
+        - blocchiDistruttibili: List<String>
+        - giocatori: List<String>
+        - bomba: List<String>
+        - esplosione: List<String>
+        - timer: Timer
+        + Map()
+        + gestisciMessaggio(): void
+        + paintComponent(Graphics g): void
+        + keyPressed(KeyEvent e): void
+        + keyReleased(KeyEvent e): void
+        + keyTyped(KeyEvent e): void
+    }
+
+    class Menu {
+        - frame: JFrame
+        - panel: JPanel
+        - connectButton: JButton
+        - loadButton: JButton
+        - quitButton: JButton
+        - isConnected: boolean
+        + Menu()
+    }
+
+    class Messaggio {
+        - tipo: String
+        - dati: List<String>
+        - Id: int
+        + Messaggio()
+        + Messaggio(String tipo)
+        + getTipo(): String
+        + setTipo(String tipo): void
+        + aggiungiDato(String d): void
+        + getDati(): List<String>
+        + setDati(List<String> dati): void
+        + getId(): int
+        + setId(int Id): void
+    }
+    class VictoryWindow {
+        + VictoryWindow()
+        - createImageIcon(String path): ImageIcon
+    }
+
+    Client --|> Messaggio : uses
+    Client --|> ClientView : has
+    Client --|> DefeatWindow : creates
+    Client --|> Map : interacts
+    Client --|> Menu : shows
+    ClientView --|> Map : draws
+    DefeatWindow --|> Messaggio : has
+    Map --|> Timer : uses
+    Menu --|> JFrame : has
+    Menu --|> JPanel : has
+    VictoryWindow --|> ImageIcon : creates
+}

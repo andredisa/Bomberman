@@ -2,29 +2,25 @@
 actor Utente as User
 participant Client
 participant Server
-participant Menu
-participant Map
-participant Messaggio
 
-User -> Menu: Avvia Applicazione
-Menu -> Client: Richiesta di Connessione
+User -> Server: Avvia Applicazione
+Client -> Server: Richiesta di Connessione
 Client -> Server: connect()
-Server --> Client: Connesione Riuscita
-User -> Menu: Input Utente (Coordinate)
-Server -> Client: cordinate iniziali(x, y, bombaPiazzata)
-loop gioco
-    Client -> Map: MovimentoGiocatore(x, y, bombaPiazzata)
-    Map -> Messaggio: creaMessaggio("COORDINATE")
-    Messaggio -> Client: getOutputStream()
-    Client -> Server: dos.writeUTF("x;y;bombaPiazzata")
-    Server -> Server: Elabora Coordinate
+Server --> Client: Connessione Riuscita
+
+Server -> Client: dati iniziali (idClient, x, y, bombaPiazzata)
+
+loop Gioco
+    Client -> Server: MovimentoGiocatore(x, y, bombaPiazzata)
     Server -> Client: confermaRicezione()
+    Server -> Server: Elabora Coordinate
+    Server -> Server: Verifica azione
     Client -> Server: riceviMessaggio()
-    Client -> Map: disegnaBlocchi
+    Client -> Client: disegna blocco
     Server -> Server: Costruisci Messaggio
     Server -->> Client: Invia Messaggio
 end loop
-Server -> Client: messaggio fine gioco
-Client -> Menu: schermata vittoria/sconfitta
 
+Server -> Client: verifica fine gioco
+Client -> Client: schermata vittoria/sconfitta
 @enduml

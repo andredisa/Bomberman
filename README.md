@@ -1,6 +1,6 @@
 # 🎮 Bomberman Multiplayer
 
-A simple implementation of **Bomberman** in Java with multiplayer support.
+> A simple implementation of `Bomberman` in Java with multiplayer support. This repository includes `client-server` communication to enable multiplayer functionality.
 
 ---
 

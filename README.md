@@ -30,10 +30,14 @@ javac Main.java
 ```
 When prompted, enter the server's IP address to connect.
 
+---
+
 ## ⚙️ Configuration
 - 🔧 Modify the IP address and port in Client.java to match the server configuration
 
 - 🛠️ Adjust server settings in Server.java if necessary
+
+---
 
 ## 🧑‍💻 Developed By
 

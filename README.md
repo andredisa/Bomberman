@@ -1,27 +1,43 @@
-# Bomberman Multiplayer
+# 🎮 Bomberman Multiplayer
 
-Un'implementazione semplice di Bomberman in Java con supporto multiplayer.
+A simple implementation of **Bomberman** in Java with multiplayer support.
 
-## Caratteristiche principali
+---
 
-- **Multiplayer**: Competi con un amico in un classico scontro a Bomberman.
-- **Gestione Blocchi Dinamica**: La mappa del gioco presenta blocchi fissi e distruttibili che possono essere distrutti dalle bombe.
-- **Bombe e Esplosioni**: I giocatori possono piazzare bombe che esploderanno dopo un certo periodo, danneggiando gli avversari e distruggendo blocchi.
-- **Comunicazione Server-Client**: Implementazione di una semplice comunicazione server-client per sincronizzare lo stato del gioco tra i giocatori.
+## 🌟 Main Features
 
+- 👥 **Multiplayer**: Compete with a friend in a classic Bomberman showdown  
+- 🧱 **Dynamic Block Management**: Fixed and destructible blocks that can be destroyed by bombs  
+- 💣 **Bombs and Explosions**: Players place bombs that explode after a delay, destroying blocks and damaging opponents  
+- 🔄 **Client-Server Communication**: Synchronizes game state between players using a simple client-server model  
 
-## Istruzioni per l'esecuzione
+---
 
-1. **Server**: Esegui il server Bomberman eseguendo il file `Server.java`.
-2. **Client**: Esegui due istanze del client Bomberman eseguendo il file `Main.java` su due terminali diversi. Inserisci l'indirizzo IP del server per connetterti.
+## 🚀 How to Run
 
-## Configurazione
+### 🖥️ Server
+Run the Bomberman server:
 
-- Modifica l'indirizzo IP e la porta nel file `Client.java` per connetterti al server.
-- Configura le impostazioni del server nel file `Server.java` se necessario.
+```bash
+javac Server.java
+```
 
-Divertiti a giocare a Bomberman Multiplayer!
+## 🎮 Client
+Run two instances of the Bomberman client on separate terminals:
 
-Gioco sviluppato da:  
--El Mellalou Abderrahman 
--Disanti Andrea
+```bash
+javac Main.java
+```
+When prompted, enter the server's IP address to connect.
+
+## ⚙️ Configuration
+- 🔧 Modify the IP address and port in Client.java to match the server configuration
+
+- 🛠️ Adjust server settings in Server.java if necessary
+
+## 🧑‍💻 Developed By
+
+`Disanti Andrea`
+`El Mellalou Abderrahman`
+
+### 🎉 Enjoy playing Bomberman Multiplayer!

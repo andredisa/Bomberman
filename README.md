@@ -44,4 +44,12 @@ When prompted, enter the server's IP address to connect.
 `Disanti Andrea`
 `El Mellalou Abderrahman`
 
+## ☕ Support Me
+
+If you find my work useful and would like to support me, you can buy me a coffee! Your support helps me keep creating and improving my projects. Thank you! 😊
+
+<a href="https://www.buymeacoffee.com/andredisa" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+
+---
+
 ### 🎉 Enjoy playing Bomberman Multiplayer!
